@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+<rect width="512" height="512" fill="#26384b"></rect>
+<text x="150" y="240" font-family="Barlow Condensed" font-weight="800" font-size="150" letter-spacing="6" fill="#f2f2f3"><tspan fill="#a9bed3">A</tspan>N</text>
+<text x="205" y="363" font-family="Barlow Condensed" font-weight="800" font-size="150" letter-spacing="6" fill="#f2f2f3">T<tspan fill="#a9bed3">I</tspan></text>
+<circle cx="333" cy="350" r="13" fill="#a9bed3"></circle>
+</svg>
