@@ -4,7 +4,8 @@
 //
 // Los proyectos viven en el arreglo PROYECTOS. Agregar uno es agregar una entrada y sus
 // imágenes en portafolio/img/. El estilo y el movimiento están en portafolio/portafolio.css
-// y portafolio/portafolio.js, que no se generan: se editan a mano.
+// y portafolio/portafolio.js, que no se generan: se editan a mano. Cada página lleva además su
+// imagen para compartir (WhatsApp, LinkedIn) en portafolio/img/og-<slug>.jpg, de 1200×630.
 //
 // Regla de la casa: aquí no van nombres de clientes ni cifras de tratos concretos.
 
@@ -216,7 +217,14 @@ function documento({ ruta, titulo, desc, imagen, cuerpo, datos }) {
 <meta property="og:title" content="${esc(titulo)}">
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:image" content="${DOMINIO}${imagen}">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${esc(titulo)}">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${esc(titulo)}">
+<meta name="twitter:description" content="${esc(desc)}">
+<meta name="twitter:image" content="${DOMINIO}${imagen}">
 
 <link rel="icon" href="/icono.svg" type="image/svg+xml">
 <link rel="icon" href="/icono-512.png" sizes="512x512" type="image/png">
@@ -358,7 +366,7 @@ function paginaCaso(p, i) {
     ruta: `/portafolio/${p.slug}/`,
     titulo: `${p.nombre} · ${p.linea.replace(/\.$/, "")} · Anticipa`,
     desc: p.resumen,
-    imagen: `/portafolio/img/${p.portada}`,
+    imagen: `/portafolio/img/og-${p.slug}.jpg`,
     cuerpo,
     datos: {
       "@context": "https://schema.org",
@@ -408,7 +416,7 @@ function paginaIndice() {
     ruta: "/portafolio/",
     titulo: "Portafolio · Anticipa",
     desc: "Proyectos de Anticipa: pagos para restaurantes, adelantos de nómina, apps de comunidad, salud y herramientas internas. Software a la medida hecho en México.",
-    imagen: `/portafolio/img/${PROYECTOS[0].portada}`,
+    imagen: "/portafolio/img/og-portafolio.jpg",
     cuerpo,
     datos: {
       "@context": "https://schema.org",
