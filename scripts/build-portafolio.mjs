@@ -388,8 +388,8 @@ function paginaIndice() {
       <p class="mono miga"><a href="/">Anticipa</a> <span aria-hidden="true">/</span> Portafolio</p>
       <h1>Porta<span class="ac">folio.</span></h1>
       <div class="indice-hero__pie">
-        <p class="caso-hero__lead">Productos propios, sistemas para clientes y prototipos. Todos diseñados, construidos y puestos a funcionar por el mismo equipo con el que vas a hablar.</p>
-        <p class="mono indice-hero__cuenta">[ ${num(PROYECTOS.length - 1)} proyectos ]</p>
+        <p class="caso-hero__lead">Algunos de nuestros proyectos más destacados: productos propios, sistemas para clientes y prototipos. Todos diseñados, construidos y puestos a funcionar por el mismo equipo con el que vas a hablar.</p>
+        <p class="mono indice-hero__cuenta">[ Selección destacada ]</p>
       </div>
     </div>
   </section>
