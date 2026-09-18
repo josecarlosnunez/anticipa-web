@@ -1,6 +1,6 @@
 # anticipamx.com
 
-Sitio público de **Anticipa**: una sola página estática, sin build ni dependencias que instalar.
+Sitio público de **Anticipa**: la landing de servicios y el portafolio. Estático, sin dependencias que instalar.
 Se publica con GitHub Pages desde la rama `main`.
 
 ## Archivos
@@ -8,6 +8,8 @@ Se publica con GitHub Pages desde la rama `main`.
 | Archivo | Qué es |
 | --- | --- |
 | `index.html` | La página completa: estilos, animaciones y contenido en un solo archivo. |
+| `portafolio/` | Portafolio: índice y una página por proyecto. Se genera, ver abajo. |
+| `scripts/build-portafolio.mjs` | Generador del portafolio y del `sitemap.xml`. Los proyectos son un arreglo al inicio del archivo. |
 | `og.png` | Imagen 1200×630 que se ve al compartir el enlace en WhatsApp, LinkedIn o Slack. |
 | `icono.svg`, `icono-512.png` | Favicon y icono para iOS, del paquete de marca oficial. |
 | `CNAME` | Dominio propio (`anticipamx.com`). No borrar: GitHub Pages lo lee para servir el dominio. |
@@ -24,6 +26,21 @@ python3 -m http.server 4000
 ```
 
 Y entra a http://localhost:4000.
+
+## Portafolio
+
+Las páginas de `portafolio/` salen de `scripts/build-portafolio.mjs`. Para agregar o editar un proyecto
+se cambia su entrada en el arreglo `PROYECTOS`, se dejan sus imágenes en `portafolio/img/` y se corre:
+
+```bash
+node scripts/build-portafolio.mjs
+```
+
+`portafolio/portafolio.css` y `portafolio/portafolio.js` no se generan: se editan a mano.
+`portafolio/constancia/app/` es una copia de `~/Tracker/index.html`, la app que se abre desde su caso.
+Las tarjetas del portafolio en la página de inicio viven en la landing (repositorio
+`anticipa-nomina-plasticos`, `docs/anticipa-servicios.html`); si cambia la lista de proyectos hay que
+tocar ambos lados. Regla: en el portafolio no van nombres de clientes ni cifras de tratos.
 
 ## Cómo se publica un cambio
 
