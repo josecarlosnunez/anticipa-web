@@ -1,0 +1,11 @@
+BEGIN:VCARD
+VERSION:3.0
+N:García;Alberto;;;
+FN:Alberto García
+ORG:Anticipa
+TITLE:Director Sector Público
+EMAIL;TYPE=INTERNET,WORK:alberto@anticipamx.com
+TEL;TYPE=CELL,VOICE:+525518049888
+URL:https://anticipamx.com
+URL;TYPE=Tarjeta:https://anticipamx.com/tarjeta/alberto
+END:VCARD

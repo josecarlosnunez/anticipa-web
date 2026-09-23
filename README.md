@@ -9,6 +9,7 @@ Se publica con GitHub Pages desde la rama `main`.
 | --- | --- |
 | `index.html` | La página completa: estilos, animaciones y contenido en un solo archivo. |
 | `portafolio/` | Portafolio: índice y una página por proyecto. Se genera, ver abajo. |
+| `tarjeta/` | Tarjetas de presentación en línea (`/tarjeta/jose`, `/tarjeta/emilio`, `/tarjeta/alberto`): a donde apunta el QR de los pases de Apple Wallet. Guardan el contacto (vCard) y arman una junta para el calendario de quien escanea. Se generan desde `ProjectoAPP` con `npm run wallet:tarjetas`; no se editan a mano. Llevan `noindex`. |
 | `scripts/build-portafolio.mjs` | Generador del portafolio y del `sitemap.xml`. Los proyectos son un arreglo al inicio del archivo. |
 | `og.png` | Imagen 1200×630 que se ve al compartir el enlace en WhatsApp, LinkedIn o Slack. |
 | `icono.svg`, `icono-512.png` | Favicon y icono para iOS, del paquete de marca oficial. |
