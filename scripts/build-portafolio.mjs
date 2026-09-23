@@ -439,7 +439,7 @@ escribir("portafolio/index.html", paginaIndice());
 PROYECTOS.forEach((p, i) => escribir(`portafolio/${p.slug}/index.html`, paginaCaso(p, i)));
 
 const hoy = new Date().toISOString().slice(0, 10);
-const rutas = ["/", "/vertice/", "/portafolio/", ...PROYECTOS.map((p) => `/portafolio/${p.slug}/`)];
+const rutas = ["/", "/gobierno/", "/portafolio/", ...PROYECTOS.map((p) => `/portafolio/${p.slug}/`)];
 escribir(
   "sitemap.xml",
   `<?xml version="1.0" encoding="UTF-8"?>
