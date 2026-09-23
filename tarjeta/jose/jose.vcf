@@ -1,0 +1,11 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Núñez;José Carlos;;;
+FN:José Carlos Núñez
+ORG:Anticipa
+TITLE:Co-founder · Director de Tecnología
+EMAIL;TYPE=INTERNET,WORK:jose@anticipamx.com
+TEL;TYPE=CELL,VOICE:+525548580691
+URL:https://anticipamx.com
+URL;TYPE=Tarjeta:https://anticipamx.com/tarjeta/jose
+END:VCARD
