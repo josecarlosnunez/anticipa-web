@@ -1,0 +1,1002 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anticipa Gobierno · Tecnología para una administración pública conectada</title>
+<meta name="description" content="Anticipa Gobierno es la vertical de sector público de Anticipa: inteligencia artificial, digitalización de procedimientos y software a la medida para ayuntamientos, organismos y dependencias. Vértice es su producto propio insignia.">
+<link rel="canonical" href="https://anticipamx.com/gobierno/">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#1b1714">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Anticipa">
+<meta property="og:locale" content="es_MX">
+<meta property="og:url" content="https://anticipamx.com/gobierno/">
+<meta property="og:title" content="Anticipa Gobierno · Tecnología para una administración pública conectada">
+<meta property="og:description" content="Anticipa Gobierno es la vertical de sector público de Anticipa: inteligencia artificial, digitalización de procedimientos y software a la medida para ayuntamientos, organismos y dependencias. Vértice es su producto propio insignia.">
+<meta property="og:image" content="https://anticipamx.com/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Anticipa Gobierno · tecnología para una administración pública conectada">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Anticipa Gobierno · Tecnología para una administración pública conectada">
+<meta name="twitter:description" content="Anticipa Gobierno es la vertical de sector público de Anticipa: inteligencia artificial, digitalización de procedimientos y software a la medida para ayuntamientos, organismos y dependencias. Vértice es su producto propio insignia.">
+<meta name="twitter:image" content="https://anticipamx.com/og.png">
+
+<link rel="icon" href="/icono.svg" type="image/svg+xml">
+<link rel="icon" href="/icono-512.png" sizes="512x512" type="image/png">
+<link rel="apple-touch-icon" href="/icono-512.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Anticipa",
+  "url": "https://anticipamx.com/",
+  "logo": "https://anticipamx.com/icono-512.png",
+  "email": "hola@anticipamx.com",
+  "description": "Estudio de software a la medida, inteligencia artificial y digitalización de operaciones para empresas mexicanas y gobiernos municipales.",
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "MX"
+  },
+  "areaServed": {
+    "@type": "Country",
+    "name": "México"
+  },
+  "knowsAbout": [
+    "Software a la medida",
+    "Inteligencia artificial",
+    "Digitalización de operaciones",
+    "Adelantos de nómina",
+    "Facturación CFDI",
+    "Gobierno digital municipal"
+  ]
+}
+</script>
+
+<style>
+  /* ═══════════════════════════════════════════════════════════════════════
+     ANTICIPA · VÉRTICE (sector público)
+     Vertical Anticipa Gobierno; Vértice es su producto propio insignia. Mismo esqueleto de
+     movimiento que la landing de servicios (GSAP + ScrollTrigger + Lenis), con la paleta
+     café y latón y un registro formal: serif en los títulos, esquinas rectas, reglas finas.
+     El hero es un mapa de curvas de nivel (WebGL) con deriva lenta.
+     ═══════════════════════════════════════════════════════════════════════ */
+  :root{
+    --tierra:#1b1714;
+    --tierra-2:#26201a;
+    --tierra-3:#332a22;
+    --laton:#c9a04a;
+    --laton-osc:#8a6a1e;
+    --cobre:#a9822a;
+    --crema:#f2ead5;
+    --crema-2:#a89c8a;
+    --niebla:rgba(242,234,213,.12);
+    --niebla-2:rgba(242,234,213,.28);
+    --papel:#f3f1ec;
+    --tinta:#1b1c1a;
+    --gris:#5f5a52;
+    --linea:#e0dbd0;
+    --c-op:#a273e8;--c-ges:#e0a43a;--c-res:#37b26f;--c-con:#4a7cf7;--c-int:#2aa7b8;
+    --rojo:#d9695f;--verde:#4cae7f;
+    --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+    --sans:"Public Sans","Helvetica Neue",Arial,sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html{color-scheme:dark}
+  html.lenis,html.lenis body{height:auto}
+  .lenis.lenis-smooth{scroll-behavior:auto!important}
+  .lenis.lenis-stopped{overflow:hidden}
+  body{margin:0;background:var(--tierra);color:var(--crema);font-family:var(--sans);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:inherit}
+  :focus-visible{outline:2px solid var(--laton);outline-offset:4px}
+  h1,h2,h3{font-family:var(--serif);font-weight:600;margin:0;text-wrap:balance;line-height:1.02;letter-spacing:-.015em}
+  p{margin:0}
+  .env{width:min(1240px,calc(100% - 48px));margin:0 auto}
+  .mono{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+  .btn{display:inline-flex;align-items:center;gap:14px;font-family:var(--sans);font-weight:600;font-size:15px;letter-spacing:.02em;padding:16px 26px;background:var(--laton);color:var(--tierra);text-decoration:none;position:relative;isolation:isolate;overflow:hidden;will-change:transform;border:1.5px solid var(--laton)}
+  .btn::before{content:"";position:absolute;inset:0;background:var(--crema);transform:translateY(101%);transition:transform .45s cubic-bezier(.76,0,.24,1);z-index:-1}
+  .btn:hover::before{transform:translateY(0)}
+  .btn svg{width:16px;height:16px;transition:transform .35s cubic-bezier(.76,0,.24,1)}
+  .btn:hover svg{transform:translate(3px,-3px)}
+  .btn--linea{background:transparent;color:var(--crema);border-color:var(--niebla-2)}
+  .btn--linea::before{background:var(--crema)}
+  .btn--linea:hover{color:var(--tierra)}
+  .papel .btn--linea{color:var(--tinta);border-color:var(--tinta)}
+  .papel .btn--linea::before{background:var(--tinta)}
+  .papel .btn--linea:hover{color:var(--papel)}
+  .ceja{display:flex;gap:14px;align-items:center;color:var(--laton);margin-bottom:22px}
+  .ceja::before{content:"";width:34px;height:1px;background:var(--laton)}
+  .papel .ceja{color:var(--laton-osc)}.papel .ceja::before{background:var(--laton-osc)}
+  .sec{padding:clamp(100px,12vw,180px) 0;position:relative}
+  .sec h2{font-size:clamp(40px,5.6vw,84px);max-width:16ch}
+  .sec h2 .ac{color:var(--laton)}
+  .papel{background:var(--papel);color:var(--tinta)}
+  .papel h2 .ac{color:var(--laton-osc)}
+  .cab{display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:end;margin-bottom:64px}
+  .cab p{color:var(--crema-2);max-width:42ch;font-size:18px}
+  .papel .cab p{color:var(--gris)}
+  @media (max-width:820px){.cab{grid-template-columns:1fr;margin-bottom:40px}}
+
+  /* ── cursor ─────────────────────────────────────────────────────────── */
+  .cursor{position:fixed;left:0;top:0;z-index:100;pointer-events:none;mix-blend-mode:difference;display:none;opacity:0;transition:opacity .4s}
+  body.cursor-on .cursor{opacity:1}
+  .cursor__dot{position:absolute;width:8px;height:8px;margin:-4px;border-radius:50%;background:#fff}
+  .cursor__ring{position:absolute;width:40px;height:40px;margin:-20px;border-radius:50%;border:1.5px solid #fff;transition:transform .35s cubic-bezier(.16,1,.3,1),opacity .3s}
+  @media (pointer:fine){.cursor{display:block}}
+  body.cursor-hover .cursor__ring{transform:scale(2.2);opacity:.6}
+
+  /* ── preloader ──────────────────────────────────────────────────────── */
+  .carga{position:fixed;inset:0;z-index:90;background:var(--tierra);display:flex;align-items:flex-end;justify-content:space-between;padding:32px 40px;color:var(--crema)}
+  .carga__marca{font-family:var(--serif);font-weight:700;font-size:28px;letter-spacing:.06em;line-height:1}
+  .carga__marca i{font-style:normal;color:var(--laton)}
+  .carga__num{font-family:var(--serif);font-weight:600;font-size:clamp(90px,18vw,220px);line-height:.85;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+  .carga__num span{color:var(--laton)}
+  .carga__barra{position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--laton);transform-origin:left;transform:scaleX(0)}
+
+  /* ── barra ──────────────────────────────────────────────────────────── */
+  .barra{position:fixed;inset:0 0 auto 0;z-index:40;mix-blend-mode:difference;color:#fff}
+  .barra .env{display:flex;align-items:center;justify-content:space-between;height:76px;gap:20px}
+  .barra__marca{display:flex;align-items:center;gap:16px;text-decoration:none}
+  .barra__logo{display:block;height:20px;width:auto;color:#fff;--logo-acento:#fff}
+  .barra__logo svg{height:100%;width:auto;display:block}
+  .barra__sep{width:1px;height:22px;background:rgba(255,255,255,.5)}
+  .barra__prod{font-family:var(--serif);font-weight:700;font-size:20px;letter-spacing:.08em;line-height:1}
+  .barra__prod i{font-style:normal;color:var(--laton)}
+  .barra__menu{display:flex;gap:26px}
+  .barra__menu a{text-decoration:none;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;opacity:.75;transition:opacity .2s}
+  .barra__menu a:hover{opacity:1}
+  .barra__idx{display:flex;gap:18px;align-items:center}
+  .barra__idx b{font-weight:500;color:var(--laton)}
+  @media (max-width:900px){.barra__menu,.barra__idx{display:none}}
+
+  /* ── hero ───────────────────────────────────────────────────────────── */
+  .hero{position:relative;height:100svh;min-height:640px;overflow:hidden;background:var(--tierra)}
+  .hero__gl{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity .9s ease}
+  .hero__gl.pintado{opacity:1}
+  .hero__poster{position:absolute;inset:0;background:radial-gradient(70% 60% at 78% 30%,rgba(169,130,42,.28),transparent 60%),radial-gradient(60% 50% at 20% 85%,rgba(51,42,34,.9),transparent 65%),var(--tierra)}
+  .hero__grano{position:absolute;inset:0;pointer-events:none;opacity:.55;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .35 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+  .hero__cont{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:100px 0 44px}
+  .hero h1{font-size:clamp(50px,7.4vw,124px);line-height:.98;letter-spacing:-.025em;max-width:13ch;font-weight:600}
+  .hero h1 .acento{color:var(--laton)}
+  .hero__pie{display:grid;grid-template-columns:minmax(0,1.2fr) auto;gap:32px;align-items:end;margin-top:38px;padding-top:26px;border-top:1px solid var(--niebla)}
+  .hero__lead{max-width:48ch;color:var(--crema);font-size:18px;opacity:.85}
+  .hero__cta{display:flex;gap:12px;flex-wrap:wrap}
+  .hero__scroll{position:absolute;right:28px;top:42%;display:flex;flex-direction:column;align-items:center;gap:12px;color:var(--crema-2);z-index:2}
+  .hero__scroll i{display:block;width:1px;height:46px;background:var(--crema-2);position:relative;overflow:hidden}
+  .hero__scroll i::after{content:"";position:absolute;inset:0;background:var(--laton);animation:cae 1.8s cubic-bezier(.76,0,.24,1) infinite}
+  @keyframes cae{0%{transform:translateY(-100%)}60%,100%{transform:translateY(100%)}}
+  @media (max-width:820px){.hero__pie{grid-template-columns:1fr}.hero__scroll{display:none}.hero h1{max-width:none}}
+
+  /* ── marquesina ─────────────────────────────────────────────────────── */
+  .marq{overflow:hidden;border-top:1px solid var(--niebla);border-bottom:1px solid var(--niebla);padding:20px 0;background:var(--tierra)}
+  .marq__pista{display:flex;width:max-content;will-change:transform}
+  .marq__grupo{display:flex;align-items:center;gap:52px;padding-right:52px;font-family:var(--serif);font-weight:600;font-size:clamp(26px,3.6vw,46px);letter-spacing:.01em;white-space:nowrap;color:var(--crema)}
+  .marq__grupo i{display:block;width:8px;height:8px;background:var(--laton);flex:none;transform:rotate(45deg)}
+  .marq__grupo em{font-style:italic;color:var(--laton)}
+
+  /* ── manifiesto ─────────────────────────────────────────────────────── */
+  .manif{padding:clamp(120px,15vw,210px) 0}
+  .manif__meta{display:flex;justify-content:space-between;gap:24px;margin-bottom:52px;color:var(--gris)}
+  .manif__txt{font-family:var(--serif);font-weight:600;font-size:clamp(34px,5.2vw,84px);line-height:1.06;letter-spacing:-.02em;max-width:20ch;text-wrap:pretty}
+  .manif__txt .w{display:inline-block;color:var(--linea);will-change:color}
+  .manif__txt .w.on{color:var(--tinta)}
+  .manif__txt .w.ac.on{color:var(--laton-osc)}
+  .manif__lista{margin:56px 0 0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1.5px solid var(--tinta)}
+  .manif__lista li{padding:26px 24px 8px 0;border-right:1px solid var(--linea);margin-right:24px;font-size:17px;color:var(--gris)}
+  .manif__lista li:last-child{border:0;margin:0}
+  .manif__lista b{display:block;font-family:var(--serif);font-weight:600;font-size:26px;color:var(--tinta);margin-bottom:8px}
+  @media (max-width:900px){.manif__lista{grid-template-columns:1fr 1fr}.manif__lista li:nth-child(2){border:0;margin:0}}
+  @media (max-width:520px){.manif__lista{grid-template-columns:1fr}.manif__lista li{border-right:0;margin:0;border-bottom:1px solid var(--linea)}}
+
+  /* ── tarjetas (problema, IA, memoria) ───────────────────────────────── */
+  .rej{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .tar{padding:28px 28px 30px;background:var(--tierra-2);border:1px solid var(--niebla);border-top:2px solid var(--laton);position:relative;overflow:hidden}
+  .tar small{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--laton);margin-bottom:14px}
+  .tar b{display:block;font-family:var(--serif);font-weight:600;font-size:24px;line-height:1.15;color:var(--crema);margin-bottom:8px}
+  .tar p{color:var(--crema-2);font-size:15.5px;max-width:34ch}
+  .papel .tar{background:#fff;border-color:var(--linea);border-top-color:var(--laton-osc)}
+  .papel .tar small{color:var(--laton-osc)}.papel .tar b{color:var(--tinta)}.papel .tar p{color:var(--gris)}
+  @media (max-width:900px){.rej{grid-template-columns:1fr 1fr}}
+  @media (max-width:560px){.rej{grid-template-columns:1fr}}
+
+  /* ── modelo (red) ───────────────────────────────────────────────────── */
+  .modelo__grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+  .modelo__red{position:relative;aspect-ratio:1/1;max-width:560px;width:100%;margin:0 auto}
+  .modelo__red canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .modelo__lista{list-style:none;margin:36px 0 0;padding:0;border-top:1.5px solid var(--tinta)}
+  .modelo__lista li{display:grid;grid-template-columns:150px 1fr;gap:20px;padding:15px 0;border-bottom:1px solid var(--linea);font-size:16px}
+  .modelo__lista li span:first-child{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--laton-osc);padding-top:4px}
+  .modelo__lista li span:last-child{color:var(--tinta)}
+  @media (max-width:900px){.modelo__grid{grid-template-columns:1fr}.modelo__lista li{grid-template-columns:110px 1fr}}
+
+  /* ── operación (pasos) ──────────────────────────────────────────────── */
+  .pasos{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:24px;border-top:1.5px solid var(--niebla-2);padding-top:32px}
+  .pasos__linea{position:absolute;left:0;top:-1.5px;width:100%;height:1.5px;background:var(--laton);transform-origin:left;transform:scaleX(0)}
+  .paso{position:relative}
+  .paso .n{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--tierra-2);border:1px solid var(--niebla-2);font-family:var(--mono);font-size:13px;color:var(--crema-2);transition:background .4s,color .4s,border-color .4s}
+  .paso.on .n{background:var(--laton);color:var(--tierra);border-color:var(--laton)}
+  .paso h3{font-size:22px;margin:22px 0 10px;color:var(--crema)}
+  .paso p{color:var(--crema-2);font-size:15.5px;max-width:26ch}
+  .exp{margin-top:72px;display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:start}
+  .exp__lista{list-style:none;margin:0;padding:0;border-top:1.5px solid var(--niebla-2)}
+  .exp__lista li{display:grid;grid-template-columns:44px 1fr 1.3fr;gap:20px;padding:20px 0;border-bottom:1px solid var(--niebla);align-items:start}
+  .exp__lista .n{font-family:var(--mono);font-size:12px;color:var(--laton);padding-top:6px}
+  .exp__lista b{font-family:var(--serif);font-weight:600;font-size:22px;color:var(--crema)}
+  .exp__lista p{color:var(--crema-2);font-size:15.5px}
+  .exp__caja{border:1px solid var(--cobre);padding:34px 36px;position:relative;background:linear-gradient(180deg,rgba(169,130,42,.10),rgba(169,130,42,0))}
+  .exp__caja small{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--laton);margin-bottom:16px}
+  .exp__caja h3{font-size:30px;color:var(--crema);margin-bottom:18px}
+  .exp__caja ul{list-style:none;margin:0;padding:0;font-family:var(--serif);font-size:22px;line-height:1.5;color:var(--crema)}
+  .exp__caja li::before{content:"·";color:var(--laton);margin-right:12px}
+  @media (max-width:900px){.pasos{grid-template-columns:1fr 1fr;row-gap:36px}.exp{grid-template-columns:1fr}.exp__lista li{grid-template-columns:36px 1fr}.exp__lista p{grid-column:2}}
+  @media (max-width:520px){.pasos{grid-template-columns:1fr}}
+
+  /* ── capas ──────────────────────────────────────────────────────────── */
+  .capas{display:grid;gap:10px;margin-top:8px}
+  .capa{display:grid;grid-template-columns:200px 1fr auto;gap:24px;align-items:center;padding:22px 28px;background:#fff;border:1px solid var(--linea);border-left:4px solid var(--c);will-change:transform}
+  .capa b{font-family:var(--mono);font-weight:500;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--c)}
+  .capa span{font-family:var(--serif);font-size:22px;color:var(--tinta)}
+  .capa small{font-family:var(--mono);font-size:11px;color:var(--gris);letter-spacing:.08em;text-transform:uppercase}
+  .cadena{margin-top:88px}
+  .cadena__fila{display:grid;grid-template-columns:repeat(5,1fr);gap:0;border-top:1.5px solid var(--tinta)}
+  .cadena__fila div{padding:24px 24px 8px 0;border-right:1px solid var(--linea);margin-right:24px;position:relative}
+  .cadena__fila div:last-child{border:0;margin:0}
+  .cadena__fila div::after{content:"→";position:absolute;right:-6px;top:26px;color:var(--laton-osc);font-family:var(--mono)}
+  .cadena__fila div:last-child::after{display:none}
+  .cadena__fila small{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--laton-osc);margin-bottom:10px}
+  .cadena__fila span{color:var(--gris);font-size:15.5px}
+  .cadena__pie{margin-top:36px;font-family:var(--serif);font-size:clamp(22px,2.6vw,32px);line-height:1.3;color:var(--tinta);max-width:34ch}
+  @media (max-width:900px){.capa{grid-template-columns:1fr;gap:6px}.cadena__fila{grid-template-columns:1fr 1fr}.cadena__fila div::after{display:none}}
+  @media (max-width:520px){.cadena__fila{grid-template-columns:1fr}.cadena__fila div{border-right:0;margin:0;border-bottom:1px solid var(--linea)}}
+
+  /* ── control (antes / después) ──────────────────────────────────────── */
+  .ad{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:80px}
+  .ad__col{padding:34px 34px 38px;background:var(--tierra-2);border:1px solid var(--niebla);border-top:3px solid var(--rojo)}
+  .ad__col--si{border-top-color:var(--verde)}
+  .ad__col small{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--rojo);margin-bottom:22px}
+  .ad__col--si small{color:var(--verde)}
+  .ad__flujo{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px}
+  .ad__flujo span{font-family:var(--serif);font-size:22px;color:var(--crema)}
+  .ad__flujo span+span::before{content:"→";margin-right:10px;color:var(--crema-2);font-family:var(--mono);font-size:16px}
+  .ad__col p{color:var(--crema-2);font-size:16px;max-width:44ch}
+  .ad__col p b{color:var(--crema);font-weight:600}
+  @media (max-width:820px){.ad{grid-template-columns:1fr}}
+
+  /* ── ciudadanía y presidencia ───────────────────────────────────────── */
+  .dos{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+  .flujo{list-style:none;margin:28px 0 0;padding:0}
+  .flujo li{display:grid;grid-template-columns:150px 1fr;gap:20px;align-items:center;padding:14px 0;position:relative}
+  .flujo li+li::before{content:"";position:absolute;left:74px;top:-8px;width:1px;height:16px;background:var(--cobre)}
+  .flujo .paso-ciu{display:block;text-align:center;padding:12px 10px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;background:#fff;border:1px solid var(--linea);color:var(--laton-osc)}
+  .flujo li:first-child .paso-ciu{background:var(--laton);color:var(--tierra);border-color:var(--laton)}
+  .flujo span:last-child{color:var(--tinta);font-size:16.5px}
+  .preg{margin-top:28px;border:1px solid var(--cobre);padding:34px 36px;background:#fff}
+  .preg small{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--laton-osc);margin-bottom:18px}
+  .preg ul{list-style:none;margin:0;padding:0;font-family:var(--serif);font-size:clamp(20px,2vw,25px);line-height:1.5;color:var(--tinta)}
+  .preg p{margin-top:20px;color:var(--gris);font-size:15.5px}
+  @media (max-width:900px){.dos{grid-template-columns:1fr}.flujo li{grid-template-columns:120px 1fr}.flujo li+li::before{left:59px}}
+
+  /* ── cifras ─────────────────────────────────────────────────────────── */
+  .cifras__grid{display:grid;grid-template-columns:repeat(4,1fr);border-top:1.5px solid var(--tinta);margin-top:72px}
+  .cifra{padding:36px 28px 40px 0;border-right:1px solid var(--linea);margin-right:28px}
+  .cifra:last-child{border-right:0;margin-right:0}
+  .cifra b{display:block;font-family:var(--serif);font-weight:600;font-size:clamp(64px,8vw,120px);line-height:.9;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:var(--tinta)}
+  .cifra b small{font-size:.36em;letter-spacing:0;color:var(--laton-osc);margin-left:6px;font-family:var(--sans);font-weight:500}
+  .cifra span{display:block;margin-top:18px;color:var(--gris);max-width:22ch}
+  @media (max-width:900px){.cifras__grid{grid-template-columns:1fr 1fr}.cifra:nth-child(2){border-right:0;margin-right:0}}
+  @media (max-width:520px){.cifras__grid{grid-template-columns:1fr}.cifra{border-right:0;margin-right:0;border-bottom:1px solid var(--linea)}}
+
+  /* ── método ─────────────────────────────────────────────────────────── */
+  .met{position:relative;display:grid;grid-template-columns:1fr;border-top:1.5px solid var(--tinta)}
+  .met__linea{position:absolute;left:0;top:-1.5px;width:100%;height:1.5px;background:var(--laton-osc);transform-origin:left;transform:scaleX(0)}
+  .metp{display:grid;grid-template-columns:120px 1fr 1fr;gap:24px;padding:40px 0;border-bottom:1px solid var(--linea);align-items:start}
+  .metp .n{font-family:var(--serif);font-weight:600;font-size:52px;line-height:.9;letter-spacing:-.02em;color:var(--linea);transition:color .4s}
+  .metp.on .n{color:var(--laton-osc)}
+  .metp h3{font-size:clamp(26px,3vw,40px);color:var(--tinta)}
+  .metp p{color:var(--gris);max-width:42ch}
+  .metp .mono{display:block;margin-top:14px;color:var(--laton-osc)}
+  @media (max-width:820px){.metp{grid-template-columns:64px 1fr}.metp .n{font-size:38px}.metp > p{grid-column:2}}
+
+  /* ── fondo tipográfico ──────────────────────────────────────────────── */
+  .fondo{position:absolute;right:-3vw;top:2vw;font-family:var(--serif);font-weight:700;font-size:26vw;line-height:.8;letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1px var(--niebla);pointer-events:none;user-select:none}
+
+  /* ── resultado ──────────────────────────────────────────────────────── */
+  .res__pie{margin-top:64px;padding-top:32px;border-top:1px solid var(--niebla-2);font-family:var(--serif);font-size:clamp(24px,3vw,38px);line-height:1.25;color:var(--crema);max-width:30ch}
+
+  /* ── contacto ───────────────────────────────────────────────────────── */
+  .contacto{background:var(--tierra);color:var(--crema);padding:clamp(120px,15vw,210px) 0 60px;position:relative;overflow:hidden}
+  .contacto h2{font-size:clamp(80px,16vw,240px);line-height:.85;letter-spacing:-.04em;max-width:none}
+  .contacto h2 .ac{color:var(--laton)}
+  .contacto__grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:56px;padding-top:32px;border-top:1.5px solid var(--niebla-2)}
+  .contacto__grid p{max-width:40ch;color:var(--crema-2);font-size:18px}
+  .contacto__correo{display:inline-block;margin-top:22px;font-family:var(--serif);font-weight:600;font-size:clamp(28px,4vw,52px);line-height:1;text-decoration:none;border-bottom:3px solid var(--laton);padding-bottom:6px;overflow-wrap:anywhere;color:var(--crema)}
+  .contacto__correo:hover{color:var(--laton)}
+  .contacto ul{list-style:none;margin:0;padding:0}
+  .contacto li{padding:14px 0;border-bottom:1px solid var(--niebla);display:flex;gap:16px;align-items:baseline;color:var(--crema)}
+  .contacto li .mono{color:var(--laton);flex:none}
+  .pie{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px 24px;margin-top:80px;color:var(--crema-2);align-items:center}
+  .pie__logo{height:18px;color:var(--crema);--logo-acento:var(--laton)}
+  .pie__logo svg{height:100%;width:auto;display:block}
+  .pie a{color:var(--crema-2)}
+  @media (max-width:820px){.contacto__grid{grid-template-columns:1fr}}
+
+  /* ── split text ─────────────────────────────────────────────────────── */
+  .sw{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
+  .sw > span{display:inline-block;will-change:transform}
+  html.sin-js .carga{display:none}
+
+  @media (prefers-reduced-motion: reduce){
+    .hero__scroll i::after{animation:none}
+    .marq__pista{transform:none!important}
+    .manif__txt .w{color:var(--tinta)}.manif__txt .w.ac{color:var(--laton-osc)}
+    .paso .n{background:var(--laton);color:var(--tierra)}
+    .metp .n{color:var(--laton-osc)}
+  }
+
+  /* ── servicios (filas) ──────────────────────────────────────────────── */
+  .srv{list-style:none;margin:0;padding:0;border-top:1.5px solid var(--niebla-2)}
+  .srv li{display:grid;grid-template-columns:120px 1.1fr 1fr;gap:32px;padding:56px 0;border-bottom:1px solid var(--niebla);align-items:start}
+  .srv .n{font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--laton);padding-top:10px}
+  .srv .n small{display:block;color:var(--crema-2);margin-top:8px;letter-spacing:.08em}
+  .srv h3{font-size:clamp(30px,3.4vw,46px);color:var(--crema)}
+  .srv h3 .ac{color:var(--laton)}
+  .srv__txt p{color:var(--crema-2);font-size:16.5px;max-width:52ch}
+  .srv__txt p+p{margin-top:14px}
+  .srv__chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+  .srv__chips span{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border:1px solid var(--niebla-2);color:var(--crema)}
+  @media (max-width:900px){.srv li{grid-template-columns:70px 1fr;row-gap:20px}.srv__txt{grid-column:2}}
+
+  /* ── vértice (producto) ─────────────────────────────────────────────── */
+  .vx{background:var(--papel);color:var(--tinta)}
+  .vx__cab{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;margin-bottom:64px}
+  .vx__tag{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--laton-osc);border:1px solid var(--laton-osc);padding:7px 12px;margin-bottom:22px}
+  .vx h2{font-size:clamp(40px,5.6vw,84px)}
+  .vx__lema{font-family:var(--serif);font-size:clamp(22px,2.4vw,30px);line-height:1.3;color:var(--tinta);margin-top:20px;max-width:26ch}
+  .vx__txt{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+  .vx__txt p{color:var(--gris);font-size:16.5px}
+  .vx__txt p+p{margin-top:14px}
+  .vx__cierre{margin:56px 0 0;padding:34px 36px;border:1px solid var(--cobre);background:#fff;display:grid;grid-template-columns:1fr auto;gap:28px;align-items:center}
+  .vx__cierre p{font-family:var(--serif);font-size:clamp(20px,2.2vw,28px);line-height:1.3;color:var(--tinta);max-width:34ch}
+  .vx__pie{margin-top:36px;display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:center;color:var(--gris);font-size:15px}
+  @media (max-width:900px){.vx__cab,.vx__txt,.vx__cierre{grid-template-columns:1fr}}
+
+  /* ── compromisos ────────────────────────────────────────────────────── */
+  .comp{display:grid;grid-template-columns:repeat(4,1fr);border-top:1.5px solid var(--niebla-2)}
+  .comp div{padding:32px 28px 36px 0;border-right:1px solid var(--niebla);margin-right:28px}
+  .comp div:last-child{border:0;margin:0}
+  .comp b{display:block;font-family:var(--serif);font-weight:600;font-size:clamp(26px,2.6vw,36px);line-height:1.1;color:var(--crema);margin-bottom:14px}
+  .comp span{color:var(--crema-2);font-size:16px;max-width:24ch;display:block}
+  @media (max-width:900px){.comp{grid-template-columns:1fr 1fr}.comp div:nth-child(2){border:0;margin:0}}
+  @media (max-width:520px){.comp{grid-template-columns:1fr}.comp div{border-right:0;margin:0;border-bottom:1px solid var(--niebla)}}
+
+  /* ── enfoque ────────────────────────────────────────────────────────── */
+  .enf{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+  .enf div{padding:30px 30px 34px;background:#fff;border:1px solid var(--linea);border-top:2px solid var(--laton-osc)}
+  .enf b{display:block;font-family:var(--serif);font-weight:600;font-size:26px;line-height:1.15;color:var(--tinta);margin-bottom:10px}
+  .enf p{color:var(--gris);font-size:16px}
+  .enf__pie{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;margin-top:48px;color:var(--gris)}
+  @media (max-width:900px){.enf{grid-template-columns:1fr}}
+
+  /* ── estudio (tabla) ────────────────────────────────────────────────── */
+  .est{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:end}
+  .est__txt p{color:var(--crema-2);font-size:17px;max-width:46ch}
+  .est__txt p+p{margin-top:14px}
+  .est__tabla{border-top:1px solid var(--niebla-2)}
+  .est__tabla div{display:grid;grid-template-columns:1fr 1.6fr;gap:20px;padding:16px 0;border-bottom:1px solid var(--niebla);color:var(--crema);font-size:16px}
+  .est__tabla div span:first-child{color:var(--laton);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding-top:4px}
+  @media (max-width:900px){.est{grid-template-columns:1fr}}
+
+  /* ── formulario ─────────────────────────────────────────────────────── */
+  .forma{background:#fff;color:var(--tinta);padding:36px;border:1px solid var(--linea);display:grid;gap:18px}
+  .forma label{display:grid;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--laton-osc)}
+  .forma input,.forma textarea{width:100%;font:inherit;font-size:16px;color:var(--tinta);background:var(--papel);border:1px solid var(--linea);padding:13px 14px;letter-spacing:0;text-transform:none}
+  .forma textarea{min-height:120px;resize:vertical}
+  .forma input:focus,.forma textarea:focus{outline:none;border-color:var(--cobre);box-shadow:0 0 0 3px rgba(169,130,42,.18)}
+  .forma .dos-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .forma .trampa{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+  .forma .btn{justify-self:start;background:var(--tinta);color:var(--papel);border-color:var(--tinta)}
+  .forma .btn::before{background:var(--cobre)}
+  .forma .btn:hover{color:var(--tinta)}
+  .forma .btn:disabled{opacity:.6;cursor:progress}
+  .forma__aviso{min-height:22px;font-size:14px;color:var(--gris)}
+  .forma__aviso.ok{color:#2f6f4d}.forma__aviso.mal{color:#b0433b}
+  .contacto__grid{grid-template-columns:.9fr 1.1fr;align-items:start}
+  .contacto__senales{margin:22px 0 0}
+  @media (max-width:820px){.contacto__grid{grid-template-columns:1fr}}
+  @media (max-width:640px){.forma .dos-col{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="logo-anticipa" viewBox="0 0 620 160">
+    <text x="0" y="127" font-family="Barlow Condensed, Public Sans, Arial, sans-serif" font-weight="800" font-size="140" letter-spacing="5.6" fill="currentColor"><tspan fill="var(--logo-acento)">A</tspan>NT<tspan fill="var(--logo-acento)">I</tspan>CIPA</text>
+    <circle cx="592" cy="115" r="12" fill="var(--logo-acento)"></circle>
+  </symbol>
+</svg>
+
+<div class="cursor" aria-hidden="true"><div class="cursor__ring"></div><div class="cursor__dot"></div></div>
+
+<div class="carga" data-carga aria-hidden="true">
+  <div class="carga__marca">ANTICIPA <i>GOBIERNO</i></div>
+  <div class="carga__num"><b data-carga-num>0</b><span>%</span></div>
+  <div class="carga__barra" data-carga-barra></div>
+</div>
+
+<header class="barra">
+  <div class="env">
+    <a href="/" class="barra__marca" aria-label="Anticipa Gobierno; ir al sitio principal de Anticipa">
+      <span class="barra__logo"><svg viewBox="0 0 620 160" role="img" aria-label="Anticipa"><use href="#logo-anticipa"/></svg></span>
+      <span class="barra__sep" aria-hidden="true"></span>
+      <span class="barra__prod">G<i>O</i>BIERNO</span>
+    </a>
+    <nav class="barra__menu" aria-label="Secciones">
+      <a href="#postura" data-ir>Postura</a>
+      <a href="#servicios" data-ir>Servicios</a>
+      <a href="#vertice" data-ir>Vértice</a>
+      <a href="#metodo" data-ir>Método</a>
+      <a href="#estudio" data-ir>Estudio</a>
+      <a href="#contacto" data-ir>Contacto</a>
+    </nav>
+    <div class="barra__idx mono" aria-hidden="true">[ <b data-idx>01</b> / 10 ]</div>
+  </div>
+</header>
+
+<main id="inicio">
+
+  <!-- ═══ 01 · HERO ═══════════════════════════════════════════════════════ -->
+  <section class="hero" data-sec="01">
+    <div class="hero__poster"></div>
+    <canvas class="hero__gl" data-gl aria-hidden="true"></canvas>
+    <div class="hero__grano"></div>
+    <div class="env hero__cont">
+      <p class="ceja mono" data-intro>Gobierno digital · Inteligencia artificial · Administración pública</p>
+      <h1 data-split="hero">Tecnología para una administración pública <span class="acento">conectada.</span></h1>
+      <div class="hero__pie">
+        <p class="hero__lead" data-intro>Muchas administraciones públicas siguen operando con métodos rebasados: hojas de cálculo, libretas, correos, mensajes, carpetas físicas y sistemas aislados. En Anticipa Gobierno construimos software e inteligencia artificial para transformar esa operación en procedimientos conectados, con responsables, documentos, plazos y trazabilidad.</p>
+        <div class="hero__cta" data-intro>
+          <a class="btn" href="#contacto" data-ir data-mag>Hablemos de su administración <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 13 13 3M5 3h8v8"/></svg></a>
+          <a class="btn btn--linea" href="#servicios" data-ir data-mag>Qué hacemos</a>
+        </div>
+      </div>
+    </div>
+    <div class="hero__scroll mono" aria-hidden="true"><span>Scroll</span><i></i></div>
+  </section>
+
+  <!-- ═══ 02 · CINTA ══════════════════════════════════════════════════════ -->
+  <section class="marq" data-sec="02" aria-label="Qué hacemos en una línea">
+    <div class="marq__pista" data-marq>
+      <div class="marq__grupo"><span>Inteligencia artificial</span><i></i><em>Procedimientos digitales</em><i></i><span>Software a la medida</span><i></i><em>Vértice</em><i></i></div>
+      <div class="marq__grupo" aria-hidden="true"><span>Inteligencia artificial</span><i></i><em>Procedimientos digitales</em><i></i><span>Software a la medida</span><i></i><em>Vértice</em><i></i></div>
+      <div class="marq__grupo" aria-hidden="true"><span>Inteligencia artificial</span><i></i><em>Procedimientos digitales</em><i></i><span>Software a la medida</span><i></i><em>Vértice</em><i></i></div>
+    </div>
+  </section>
+
+  <!-- ═══ 03 · POSTURA ════════════════════════════════════════════════════ -->
+  <section class="papel manif" data-sec="03" id="postura">
+    <div class="env">
+      <div class="manif__meta mono"><span>Postura</span><span>Un problema estructural</span></div>
+      <h2 data-split style="font-size:clamp(36px,5vw,76px);max-width:18ch;margin-bottom:44px">La administración necesita avanzar. Su forma de operar <span class="ac">también.</span></h2>
+      <div class="vx__txt" data-reveal>
+        <div>
+          <p>Cuando el seguimiento depende de una libreta, los acuerdos quedan en mensajes y los expedientes se reparten entre escritorios, correos y carpetas, cada asunto exige buscar, preguntar y volver a capturar. Así se acumulan los embotellamientos administrativos, se duplican tareas y se pierde la continuidad del trabajo.</p>
+          <p>Es un problema estructural: las responsabilidades han crecido sobre formas de operación obsoletas y fragmentadas. Los equipos dedican tiempo a reconstruir información que debería estar disponible, mientras los titulares reciben una visión incompleta o tardía de lo que sucede.</p>
+        </div>
+        <div>
+          <p>Convertimos esa operación dispersa en sistemas con etapas, responsables, permisos, documentos y evidencia. Incorporamos las reglas y requisitos que la institución define y valida, con alcance, precio y entregables acordados desde el inicio.</p>
+        </div>
+      </div>
+      <p class="manif__txt" data-manif style="margin-top:64px">Menos tiempo reconstruyendo lo que pasó. Más capacidad para atender lo que sigue.</p>
+    </div>
+  </section>
+
+  <!-- ═══ 04 · SERVICIOS ══════════════════════════════════════════════════ -->
+  <section class="sec" data-sec="04" id="servicios">
+    <div class="fondo" aria-hidden="true" data-parallax="-0.1">GOB</div>
+    <div class="env">
+      <div class="cab">
+        <div><p class="ceja mono">Servicios</p><h2 data-split>Tres servicios y un producto <span class="ac">propio.</span></h2></div>
+        <p>Desde un procedimiento específico hasta la operación de un área. Diseñamos la solución a partir de cómo trabaja la institución y de lo que necesita mejorar.</p>
+      </div>
+      <ol class="srv">
+        <li data-reveal>
+          <span class="n">01<small>Inteligencia artificial</small></span>
+          <h3>IA aplicada a la administración <span class="ac">pública.</span></h3>
+          <div class="srv__txt">
+            <p>Buscar un antecedente entre cientos de archivos o revisar varias veces la misma información consume tiempo que los equipos necesitan para resolver. Implementamos IA para apoyar la lectura y clasificación de oficios, expedientes, contratos y requerimientos; consultar fuentes institucionales e identificar pendientes, faltantes e inconsistencias.</p>
+            <p>Diseñamos asistentes con referencias a las fuentes consultadas, controles de acceso y revisión humana para las tareas que lo requieren. Su propósito es facilitar el análisis y el seguimiento dentro de la operación institucional.</p>
+            <div class="srv__chips"><span>Expedientes</span><span>Asistentes institucionales</span><span>Alertas</span><span>Análisis documental</span></div>
+          </div>
+        </li>
+        <li data-reveal>
+          <span class="n">02<small>Digitalización de procedimientos</small></span>
+          <h3>Del procedimiento disperso al expediente <span class="ac">digital.</span></h3>
+          <div class="srv__txt">
+            <p>Transformamos procedimientos que hoy pasan de una hoja de cálculo a un correo, de un mensaje a una carpeta y de un escritorio a otro. Definimos un flujo digital con etapas, responsables, requisitos, permisos, documentos y plazos.</p>
+            <p>Cada asunto puede consultarse con su historial y sus pendientes, para identificar dónde se detuvo, qué falta y quién debe intervenir. Así reducimos la recaptura, la dispersión documental y la dependencia de seguimientos informales.</p>
+            <div class="srv__chips"><span>Procedimientos</span><span>Expedientes</span><span>Flujos de trabajo</span><span>Trazabilidad</span></div>
+          </div>
+        </li>
+        <li data-reveal>
+          <span class="n">03<small>Software a la medida e integraciones</small></span>
+          <h3>Sistemas que conectan la operación de <span class="ac">Gobierno.</span></h3>
+          <div class="srv__txt">
+            <p>Desarrollamos portales, trámites, aplicaciones y sistemas internos para necesidades específicas del sector público. Conectamos información entre áreas y plataformas para evitar que un mismo dato se capture varias veces o quede encerrado en sistemas que no se comunican.</p>
+            <p>Diseñamos integraciones con contabilidad, nómina, firma electrónica, identidad y otras herramientas, según su compatibilidad y las condiciones de acceso disponibles. Cada proyecto incluye los entregables y la documentación acordados, transferencia de conocimiento y condiciones de propiedad y uso definidas desde la contratación. La entrega de código fuente y los derechos sobre el desarrollo se establecen expresamente en cada contrato.</p>
+            <div class="srv__chips"><span>Trámites</span><span>Portales</span><span>Sistemas internos</span><span>Integraciones</span></div>
+          </div>
+        </li>
+        <li data-reveal>
+          <span class="n">04<small>Producto propio en desarrollo</small></span>
+          <h3>Vértice. La administración pública <span class="ac">digitalizada.</span></h3>
+          <div class="srv__txt">
+            <p>El sistema operativo de la administración pública: una instrucción del titular activa tareas, documentos, procedimientos, recursos y metas, y Vértice conecta ese recorrido en una sola plataforma.</p>
+            <div class="srv__chips"><span>Operación</span><span>Procedimientos</span><span>Planeación y presupuesto</span><span>Inteligencia artificial</span><span>Control preventivo</span><span>Trazabilidad</span></div>
+            <p style="margin-top:26px"><a class="btn btn--linea" href="#vertice" data-ir data-mag>Conozca la visión de Vértice <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 13 13 3M5 3h8v8"/></svg></a></p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ═══ 05 · VÉRTICE ════════════════════════════════════════════════════ -->
+  <section class="vx sec" data-sec="05" id="vertice">
+    <div class="env">
+      <div class="vx__cab">
+        <div>
+          <p class="vx__tag"><span>Producto propio en desarrollo</span></p>
+          <h2 data-split>Vértice. La administración pública <span class="ac">digitalizada.</span></h2>
+          <p class="vx__lema">El sistema operativo de la administración pública.</p>
+        </div>
+        <div class="modelo__red" data-reveal><canvas data-red aria-label="Vértice al centro, conectando Presidencia, Secretaría y Gabinete, Tesorería, Planeación, Contraloría y Direcciones"></canvas></div>
+      </div>
+      <div class="vx__txt" data-reveal>
+        <div>
+          <p>Una instrucción del titular activa tareas, documentos, procedimientos, recursos y metas. Cuando cada parte se administra por separado, el seguimiento se rompe y conocer el resultado exige reconstruir todo el recorrido.</p>
+          <p>Vértice nace para conectar ese recorrido en una sola plataforma: desde la instrucción inicial hasta el expediente, el procedimiento, el recurso asociado, la meta a la que contribuye y la evidencia de su cumplimiento.</p>
+        </div>
+        <div>
+          <p>Su visión integra la operación diaria, correspondencia, acuerdos, expedientes, atención ciudadana, planeación, presupuesto, Presupuesto basado en Resultados Municipal (PbRM), metas e indicadores. La inteligencia artificial apoyará la identificación de faltantes, inconsistencias y retrasos, mientras los titulares podrán consultar avances y asuntos que requieren intervención a partir de la información registrada.</p>
+          <p>La evidencia organizada durante el trabajo cotidiano facilitará la preparación de auditorías, informes de gobierno, libros blancos y entrega-recepción. El cierre de la administración podrá apoyarse en un historial construido desde la operación diaria.</p>
+        </div>
+      </div>
+      <div class="capas" data-capas style="margin-top:56px">
+        <div class="capa" style="--c:var(--c-int)"><b>Inteligencia artificial</b><span>Faltantes · inconsistencias · retrasos · consultas de los titulares</span><small>Apoyo al seguimiento</small></div>
+        <div class="capa" style="--c:var(--c-con)"><b>Control preventivo</b><span>Evidencia organizada · auditorías · informes · libros blancos · entrega-recepción</span><small>Trazabilidad</small></div>
+        <div class="capa" style="--c:var(--c-res)"><b>Planeación y presupuesto</b><span>Planeación · presupuesto · PbRM · metas · indicadores</span><small>Resultados</small></div>
+        <div class="capa" style="--c:var(--c-ges)"><b>Procedimientos</b><span>Expedientes · documentos · recursos asociados · evidencia</span><small>Gestión</small></div>
+        <div class="capa" style="--c:var(--c-op)"><b>Operación</b><span>Instrucciones · correspondencia · acuerdos · atención ciudadana</span><small>Día a día</small></div>
+      </div>
+      <div class="vx__cierre" data-reveal>
+        <p>Una administración conectada, con continuidad entre lo que se instruye, lo que se hace y lo que se acredita.</p>
+        <a class="btn" href="#contacto" data-ir data-mag>Hablemos de Vértice <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 13 13 3M5 3h8v8"/></svg></a>
+      </div>
+      <p class="vx__pie"><span>Vértice es el producto propio insignia de Anticipa Gobierno. Su implementación se plantea por etapas sobre una misma plataforma, bajo un esquema de licenciamiento institucional y con el alcance de cada etapa expresamente definido.</span></p>
+    </div>
+  </section>
+
+  <!-- ═══ 06 · COMPROMISOS ════════════════════════════════════════════════ -->
+  <section class="sec" data-sec="06" id="compromisos">
+    <div class="env">
+      <div class="cab">
+        <div><p class="ceja mono">Métricas y compromisos</p><h2 data-split>Claridad para contratar. Evidencia para <span class="ac">avanzar.</span></h2></div>
+      </div>
+      <div class="comp" data-reveal>
+        <div><b>Alcance definido</b><span>Objetivos, entregables y criterios de aceptación acordados antes de construir.</span></div>
+        <div><b>Precio acordado</b><span>Costos y condiciones explícitos para el alcance contratado.</span></div>
+        <div><b>Avances verificables</b><span>Entregas funcionales que se revisan con los equipos responsables.</span></div>
+        <div><b>Acompañamiento previsto</b><span>Capacitación, documentación y soporte con condiciones definidas.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 07 · ENFOQUE ════════════════════════════════════════════════════ -->
+  <section class="papel sec" data-sec="07" id="enfoque">
+    <div class="env">
+      <div class="cab">
+        <div><p class="ceja mono">Portafolio y enfoque</p><h2 data-split>Tecnología aplicada a problemas concretos de <span class="ac">operación.</span></h2></div>
+        <p>Nuestro enfoque parte de situaciones que frenan el trabajo institucional: asuntos detenidos entre áreas, expedientes incompletos, documentos extraviados, información duplicada y reportes que requieren días de recopilación manual.</p>
+      </div>
+      <div class="enf" data-reveal>
+        <div><b>Desarrollo a la medida</b><p>Soluciones para un procedimiento, un servicio o una necesidad específica de integración.</p></div>
+        <div><b>Vértice</b><p>Nuestro producto en desarrollo para conectar la operación de toda la administración sobre una misma plataforma.</p></div>
+        <div><b>Experiencia tecnológica de Anticipa</b><p>Proyectos del estudio que permiten conocer su trabajo de desarrollo, diseño e integración.</p></div>
+      </div>
+      <div class="enf__pie mono">
+        <span>Portafolio del estudio</span>
+        <a class="btn btn--linea" href="/portafolio/" data-mag>Ver proyectos de Anticipa <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 13 13 3M5 3h8v8"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 08 · MÉTODO ═════════════════════════════════════════════════════ -->
+  <section class="papel sec" data-sec="08" id="metodo" style="padding-top:0">
+    <div class="env">
+      <div class="cab">
+        <div><p class="ceja mono">Método</p><h2 data-split>De entender la operación a ponerla en <span class="ac">marcha.</span></h2></div>
+      </div>
+      <ol class="met" data-met style="list-style:none;padding:0;margin:0">
+        <i class="met__linea" data-met-linea aria-hidden="true"></i>
+        <li class="metp" data-metp><span class="n">01</span><h3>Entendemos la operación</h3><p>Revisamos cómo circula un asunto: quién lo recibe, dónde se registra, qué documentos genera, qué sistemas intervienen y cómo se da seguimiento. Identificamos embotellamientos, duplicidades, puntos de pérdida documental y reglas que deben incorporarse.</p></li>
+        <li class="metp" data-metp><span class="n">02</span><h3>Diseñamos la solución</h3><p>Definimos alcance funcional y técnico, prioridades, entregables, calendario, responsabilidades, criterios de aceptación y precio. Acordamos las condiciones de implementación, uso, soporte y propiedad que correspondan al proyecto.</p></li>
+        <li class="metp" data-metp><span class="n">03</span><h3>Construimos y validamos</h3><p>Presentamos avances funcionales para probarlos con quienes realizarán el trabajo. Validamos los recorridos, los permisos y la información necesaria; documentamos los ajustes y su efecto en el alcance antes de ejecutarlos.</p></li>
+        <li class="metp" data-metp><span class="n">04</span><h3>Implementamos y acompañamos</h3><p>Preparamos la configuración, la migración acordada, la capacitación y la puesta en operación. Entregamos documentación y acompañamos la estabilización conforme al plan contratado, para que el sistema se incorpore al trabajo cotidiano.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ═══ 09 · ESTUDIO ════════════════════════════════════════════════════ -->
+  <section class="sec" data-sec="09" id="estudio">
+    <div class="fondo" aria-hidden="true" data-parallax="-0.08">MX</div>
+    <div class="env est">
+      <div class="est__txt">
+        <p class="ceja mono">Estudio y equipo</p>
+        <h2 data-split style="margin-bottom:28px">Tecnología y conocimiento de la operación pública en el mismo <span class="ac">equipo.</span></h2>
+        <p>Anticipa es un estudio tecnológico de software e inteligencia artificial. Anticipa Gobierno es su vertical dedicada al sector público: reúne desarrollo tecnológico y conocimiento de la operación institucional para convertir necesidades administrativas en soluciones utilizables.</p>
+        <p>Vértice es el producto propio insignia de esta vertical y expresa su visión de una administración pública digitalizada e interconectada.</p>
+      </div>
+      <div class="est__tabla" data-reveal>
+        <div><span>Qué hacemos</span><span>Software a la medida, inteligencia artificial y gobierno digital.</span></div>
+        <div><span>Para quién</span><span>Ayuntamientos, organismos públicos y dependencias.</span></div>
+        <div><span>Dónde</span><span>México, con trabajo presencial y remoto según el proyecto.</span></div>
+        <div><span>Cómo trabajamos</span><span>Entendimiento de la operación, validación con usuarios y acompañamiento en la implementación.</span></div>
+        <div><span>Modelo</span><span>Desarrollo a la medida con condiciones contractuales específicas y productos propios con licenciamiento institucional.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 10 · CONTACTO ═══════════════════════════════════════════════════ -->
+  <section class="contacto" id="contacto" data-sec="10">
+    <div class="env">
+      <h2 data-split style="font-size:clamp(44px,7vw,110px);line-height:.95;letter-spacing:-.03em;max-width:14ch">Cuéntenos dónde se detiene el <span class="ac">trabajo.</span></h2>
+      <div class="contacto__grid">
+        <div>
+          <p>Un oficio que nadie logra localizar. Un asunto que pasa semanas entre áreas. La misma información capturada en varios sistemas. Un requerimiento que obliga a buscar documentos durante días. Un titular que necesita llamar a cinco personas para conocer el avance de una instrucción.</p>
+          <p style="margin-top:14px">Son señales de una operación que necesita conectar sus procedimientos y su información. En una primera conversación identificamos el problema, qué necesita cambiar y por dónde conviene empezar.</p>
+          <a class="contacto__correo" href="mailto:hola@anticipamx.com?subject=Anticipa%20Gobierno%20%C2%B7%20Hablemos%20de%20nuestra%20administraci%C3%B3n">hola@anticipamx.com</a>
+        </div>
+        <form class="forma" id="forma" novalidate>
+          <div class="dos-col">
+            <label>Nombre<input name="nombre" type="text" autocomplete="name" required></label>
+            <label>Institución<input name="institucion" type="text" autocomplete="organization"></label>
+          </div>
+          <div class="dos-col">
+            <label>Cargo o área<input name="cargo" type="text" autocomplete="organization-title"></label>
+            <label>Correo de contacto<input name="correo" type="email" autocomplete="email" required></label>
+          </div>
+          <label>¿Qué problema de operación necesita resolver?<textarea name="problema" rows="4"></textarea></label>
+          <label class="trampa" aria-hidden="true">Sitio web<input name="sitio_web" type="text" tabindex="-1" autocomplete="off"></label>
+          <button class="btn" type="submit" id="enviar">Solicitar conversación <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 13 13 3M5 3h8v8"/></svg></button>
+          <p class="forma__aviso" id="aviso" aria-live="polite"></p>
+        </form>
+      </div>
+      <footer class="pie mono">
+        <span class="pie__logo"><svg viewBox="0 0 620 160" role="img" aria-label="Anticipa"><use href="#logo-anticipa"/></svg></span>
+        <span>Anticipa Gobierno es la vertical de sector público de <a href="/">Anticipa</a> · Vértice es su producto propio insignia · México · 2026</span>
+      </footer>
+    </div>
+  </section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.17/dist/lenis.min.js"></script>
+<script>
+(function(){
+  'use strict';
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fine = matchMedia('(pointer:fine)').matches;
+  var hasGsap = typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined';
+  var $ = function(s, c){ return (c||document).querySelector(s); };
+  var $$ = function(s, c){ return Array.prototype.slice.call((c||document).querySelectorAll(s)); };
+
+  if (!hasGsap) {
+    var c0 = $('[data-carga]'); if (c0) c0.remove();
+    $$('.manif__txt .w').forEach(function(w){ w.classList.add('on'); });
+    return;
+  }
+  gsap.registerPlugin(ScrollTrigger);
+
+  var lenis = null;
+  if (!reduce && typeof Lenis !== 'undefined') {
+    lenis = new Lenis({ lerp: 0.09, smoothWheel: true, wheelMultiplier: 0.95 });
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(function(t){ lenis.raf(t * 1000); });
+    gsap.ticker.lagSmoothing(0);
+  }
+  $$('[data-ir]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      var id = a.getAttribute('href'); var el = id && id.charAt(0) === '#' && $(id);
+      if (!el) return;
+      e.preventDefault();
+      if (lenis) lenis.scrollTo(el, { offset: 0, duration: 1.4, easing: function(t){ return 1 - Math.pow(1 - t, 4); } });
+      else el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+    });
+  });
+
+  function splitWords(el){
+    if (el.dataset.splitReady) return $$('.sw > span', el);
+    var text = el.textContent;
+    var nodes = Array.prototype.slice.call(el.childNodes);
+    el.setAttribute('aria-label', text.trim());
+    el.textContent = '';
+    nodes.forEach(function(node){
+      var isEl = node.nodeType === 1;
+      var cls = isEl ? node.className : '';
+      var parts = node.textContent.split(/(\s+)/);
+      parts.forEach(function(part){
+        if (!part) return;
+        if (!part.trim()) { el.appendChild(document.createTextNode(part)); return; }
+        var mask = document.createElement('span'); mask.className = 'sw'; mask.setAttribute('aria-hidden','true');
+        var w = document.createElement('span'); w.textContent = part; if (cls) w.className = cls;
+        mask.appendChild(w); el.appendChild(mask);
+      });
+    });
+    el.dataset.splitReady = '1';
+    return $$('.sw > span', el);
+  }
+
+  /* preloader + hero */
+  var heroWords = splitWords($('[data-split="hero"]'));
+  var intro = $$('[data-intro]');
+  var carga = $('[data-carga]');
+  function entradaHero(){
+    var tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+    tl.fromTo(heroWords, { yPercent: 110 }, { yPercent: 0, duration: 1.1, stagger: 0.06 }, 0)
+      .fromTo(intro, { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.9, stagger: 0.08 }, 0.35)
+      .fromTo('.hero__scroll', { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.8 }, 0.9);
+    return tl;
+  }
+  if (reduce) { carga.remove(); }
+  else {
+    if (lenis) lenis.stop();
+    gsap.set(heroWords, { yPercent: 110 });
+    gsap.set(intro, { autoAlpha: 0 });
+    var num = { v: 0 }, numEl = $('[data-carga-num]');
+    var tl0 = gsap.timeline({ onComplete: function(){ carga.remove(); if (lenis) lenis.start(); ScrollTrigger.refresh(); } });
+    tl0.to(num, { v: 100, duration: 1.3, ease: 'power2.inOut', onUpdate: function(){ numEl.textContent = Math.round(num.v); } }, 0)
+      .fromTo('[data-carga-barra]', { scaleX: 0 }, { scaleX: 1, duration: 1.3, ease: 'power2.inOut' }, 0)
+      .to(carga, { yPercent: -100, duration: 0.9, ease: 'power4.inOut' }, '+=0.1')
+      .add(entradaHero(), '-=0.55');
+  }
+
+  /* cursor + magnéticos */
+  if (fine && !reduce) {
+    var cur = $('.cursor');
+    var xTo = gsap.quickTo(cur, 'x', { duration: 0.35, ease: 'power3' });
+    var yTo = gsap.quickTo(cur, 'y', { duration: 0.35, ease: 'power3' });
+    window.addEventListener('mousemove', function(e){ xTo(e.clientX); yTo(e.clientY); document.body.classList.add('cursor-on'); }, { passive: true });
+    document.addEventListener('mouseleave', function(){ document.body.classList.remove('cursor-on'); });
+    $$('a, button').forEach(function(a){
+      a.addEventListener('mouseenter', function(){ document.body.classList.add('cursor-hover'); });
+      a.addEventListener('mouseleave', function(){ document.body.classList.remove('cursor-hover'); });
+    });
+    $$('[data-mag]').forEach(function(b){
+      var bx = gsap.quickTo(b, 'x', { duration: 0.5, ease: 'power3' });
+      var by = gsap.quickTo(b, 'y', { duration: 0.5, ease: 'power3' });
+      b.addEventListener('mousemove', function(e){ var r = b.getBoundingClientRect(); bx((e.clientX - r.left - r.width / 2) * 0.28); by((e.clientY - r.top - r.height / 2) * 0.28); });
+      b.addEventListener('mouseleave', function(){ bx(0); by(0); });
+    });
+  }
+
+  /* índice */
+  var idxEl = $('[data-idx]');
+  $$('[data-sec]').forEach(function(sec){
+    ScrollTrigger.create({ trigger: sec, start: 'top 50%', end: 'bottom 50%', onToggle: function(self){ if (self.isActive) idxEl.textContent = sec.dataset.sec; } });
+  });
+
+  /* hero parallax de salida */
+  if (!reduce) {
+    gsap.to('.hero__cont', { yPercent: -18, autoAlpha: 0, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+    gsap.to('[data-gl], .hero__poster', { scale: 1.12, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+  }
+
+  /* marquesina */
+  var marq = $('[data-marq]');
+  if (marq && !reduce) {
+    var grupo = marq.firstElementChild;
+    var loop = gsap.to(marq, { x: function(){ return -grupo.offsetWidth; }, duration: 28, ease: 'none', repeat: -1 });
+    var skew = gsap.quickTo(marq, 'skewX', { duration: 0.6, ease: 'power3' });
+    ScrollTrigger.create({ onUpdate: function(self){ var v = self.getVelocity(); loop.timeScale(gsap.utils.clamp(0.4, 4, 1 + Math.abs(v) / 900)); skew(gsap.utils.clamp(-8, 8, v / 200)); } });
+  }
+
+  /* manifiesto */
+  var manif = $('[data-manif]');
+  if (manif) {
+    var mw = splitWords(manif);
+    mw.forEach(function(w){ w.classList.add('w'); if (/^(reconstruyendo|atender)$/.test(w.textContent)) w.classList.add('ac'); });
+    if (reduce) { mw.forEach(function(w){ w.classList.add('on'); }); }
+    else {
+      ScrollTrigger.create({ trigger: manif, start: 'top 75%', end: 'bottom 45%', scrub: true,
+        onUpdate: function(self){ var n = Math.round(self.progress * mw.length); mw.forEach(function(w, i){ w.classList.toggle('on', i < n); }); } });
+    }
+  }
+
+  /* títulos y bloques */
+  $$('[data-split]').forEach(function(el){
+    if (el.dataset.split === 'hero') return;
+    var words = splitWords(el);
+    if (reduce) return;
+    gsap.from(words, { yPercent: 110, duration: 1, ease: 'power4.out', stagger: 0.05, scrollTrigger: { trigger: el, start: 'top 85%', once: true } });
+  });
+  $$('[data-reveal]').forEach(function(el){
+    if (reduce) return;
+    gsap.from(el.children, { y: 28, autoAlpha: 0, duration: 0.9, ease: 'power4.out', stagger: 0.07, scrollTrigger: { trigger: el, start: 'top 85%', once: true } });
+  });
+  $$('[data-parallax]').forEach(function(el){
+    if (reduce) return;
+    gsap.to(el, { y: function(){ return innerHeight * Number(el.dataset.parallax); }, ease: 'none',
+      scrollTrigger: { trigger: el.parentElement, start: 'top bottom', end: 'bottom top', scrub: 1, invalidateOnRefresh: true } });
+  });
+
+  /* capas: se apilan desde abajo */
+  var capas = $$('[data-capas] .capa');
+  if (capas.length && !reduce) {
+    gsap.from(capas.slice().reverse(), { y: 40, autoAlpha: 0, duration: 0.9, ease: 'power4.out', stagger: 0.12, scrollTrigger: { trigger: '[data-capas]', start: 'top 80%', once: true } });
+  }
+
+  /* cifras */
+  $$('[data-cuenta]').forEach(function(el){
+    var fin = Number(el.dataset.cuenta);
+    if (reduce) { el.textContent = fin; return; }
+    var o = { v: 0 };
+    gsap.to(o, { v: fin, duration: 1.6, ease: 'power3.out', onUpdate: function(){ el.textContent = Math.round(o.v); }, scrollTrigger: { trigger: el, start: 'top 85%', once: true } });
+  });
+
+  /* pasos y método: línea que avanza */
+  if (!reduce) {
+    gsap.to('[data-met-linea]', { scaleX: 1, ease: 'none', scrollTrigger: { trigger: '[data-met]', start: 'top 70%', end: 'bottom 60%', scrub: true } });
+  }
+  $$('[data-metp]').forEach(function(p){
+    ScrollTrigger.create({ trigger: p, start: 'top 65%', end: 'bottom 65%', onToggle: function(self){ p.classList.toggle('on', self.isActive || self.progress === 1); } });
+  });
+
+  /* ═══ HERO · curvas de nivel (WebGL) ═════════════════════════════════ */
+  (function(){
+    var cv = $('[data-gl]');
+    if (reduce || !cv) { cv && cv.remove(); return; }
+    var gl = cv.getContext('webgl', { antialias: false, alpha: false, powerPreference: 'high-performance' });
+    if (!gl) { cv.remove(); return; }
+    var vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+    var fs = [
+      'precision highp float;',
+      'uniform vec2 u_res;uniform float u_t;uniform vec2 u_m;',
+      'float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453123);}',
+      'float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);',
+      ' return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}',
+      'float fbm(vec2 p){float v=0.,a=.5;mat2 m=mat2(1.6,1.2,-1.2,1.6);',
+      ' for(int i=0;i<5;i++){v+=a*noise(p);p=m*p;a*=.5;}return v;}',
+      'float linea(float f,float n,float g){float d=abs(fract(f*n)-.5)/n;return 1.-smoothstep(0.,g,d);}',
+      'void main(){',
+      ' vec2 uv=(gl_FragCoord.xy-.5*u_res)/u_res.y;',
+      ' float t=u_t*.018;',
+      ' vec2 m=(u_m-.5)*vec2(u_res.x/u_res.y,1.);',
+      ' vec2 p=uv*1.15+vec2(.4,.2)+m*.06+vec2(t,-t*.6);',
+      ' float f=fbm(p)+.18*fbm(p*3.1+vec2(2.3,7.1)+t*.5);',
+      ' float fina=linea(f,26.,.0026);',
+      ' float gruesa=linea(f,6.5,.0034);',
+      ' vec3 tierra=vec3(.106,.090,.078);',
+      ' vec3 tierra2=vec3(.165,.137,.110);',
+      ' vec3 laton=vec3(.79,.63,.29);',
+      ' vec3 crema=vec3(.95,.92,.84);',
+      ' vec3 col=mix(tierra,tierra2,smoothstep(.2,.8,f));',
+      ' col+=laton*fina*.16;',
+      ' col=mix(col,mix(laton,crema,.35),gruesa*.42);',
+      ' float d=length(uv-m*.5);',
+      ' col+=laton*.05*exp(-d*3.);',
+      ' col*=1.-.5*dot(uv*vec2(.55,.9),uv*vec2(.55,.9));',
+      ' gl_FragColor=vec4(col,1.);}'
+    ].join('\n');
+    function sh(type, src){ var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return gl.getShaderParameter(s, gl.COMPILE_STATUS) ? s : null; }
+    var v = sh(gl.VERTEX_SHADER, vs), f = sh(gl.FRAGMENT_SHADER, fs);
+    if (!v || !f) { cv.remove(); return; }
+    var prog = gl.createProgram(); gl.attachShader(prog, v); gl.attachShader(prog, f); gl.linkProgram(prog); gl.useProgram(prog);
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+    var loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    var uRes = gl.getUniformLocation(prog, 'u_res'), uT = gl.getUniformLocation(prog, 'u_t'), uM = gl.getUniformLocation(prog, 'u_m');
+    var mx = 0.7, my = 0.4, tx = 0.7, ty = 0.4, visible = true, raf = 0, pintado = false;
+    function size(){ var dpr = Math.min(devicePixelRatio || 1, 1.5); cv.width = Math.floor(cv.clientWidth * dpr); cv.height = Math.floor(cv.clientHeight * dpr); gl.viewport(0, 0, cv.width, cv.height); gl.uniform2f(uRes, cv.width, cv.height); }
+    size(); addEventListener('resize', size);
+    if (fine) addEventListener('mousemove', function(e){ tx = e.clientX / innerWidth; ty = 1 - e.clientY / innerHeight; }, { passive: true });
+    new IntersectionObserver(function(en){ visible = en[0].isIntersecting; if (visible) loop(); }, { threshold: 0 }).observe(cv);
+    document.addEventListener('visibilitychange', function(){ if (!document.hidden && visible) loop(); });
+    var t0 = performance.now();
+    function cuadro(){
+      mx += (tx - mx) * 0.04; my += (ty - my) * 0.04;
+      gl.uniform1f(uT, (performance.now() - t0) / 1000); gl.uniform2f(uM, mx, my);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      if (!pintado) { pintado = true; cv.classList.add('pintado'); }
+    }
+    function loop(){
+      cancelAnimationFrame(raf);
+      if (!visible || document.hidden) return;
+      cuadro();
+      raf = requestAnimationFrame(loop);
+    }
+    /* Un primer cuadro siempre, aunque la pestaña esté oculta: la textura existe desde el inicio. */
+    cuadro();
+    loop();
+    cv.addEventListener('webglcontextlost', function(e){ e.preventDefault(); cancelAnimationFrame(raf); cv.classList.remove('pintado'); });
+  })();
+
+  /* ═══ MODELO · red institucional (canvas 2D) ═════════════════════════ */
+  (function(){
+    var cv = $('[data-red]'); if (!cv) return;
+    var ctx = cv.getContext('2d'); var dpr = Math.min(devicePixelRatio || 1, 2);
+    var NODOS = ['Presidencia','Secretaría / Gabinete','Tesorería','Planeación','Contraloría','Direcciones'];
+    function size(){ cv.width = cv.clientWidth * dpr; cv.height = cv.clientHeight * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+    size(); addEventListener('resize', size);
+    var on = false, raf = 0, t0 = performance.now();
+    function draw(t){
+      var w = cv.clientWidth, h = cv.clientHeight, cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.36;
+      ctx.clearRect(0, 0, w, h);
+      ctx.font = '500 11px JetBrains Mono, monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      var pts = NODOS.map(function(n, i){ var a = -Math.PI / 2 + i * Math.PI * 2 / NODOS.length + Math.sin(t * .25 + i) * .05; return { n: n, x: cx + Math.cos(a) * R, y: cy + Math.sin(a) * R }; });
+      /* enlaces */
+      pts.forEach(function(p, i){
+        ctx.strokeStyle = 'rgba(169,130,42,.45)'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(p.x, p.y); ctx.stroke();
+        var k = ((t * .28 + i * .17) % 1);
+        var px = cx + (p.x - cx) * k, py = cy + (p.y - cy) * k;
+        ctx.fillStyle = '#a9822a'; ctx.beginPath(); ctx.arc(px, py, 3, 0, Math.PI * 2); ctx.fill();
+      });
+      /* centro */
+      var pulso = 1 + Math.sin(t * 1.4) * .04;
+      var g = ctx.createRadialGradient(cx, cy, 0, cx, cy, R * .32 * pulso);
+      g.addColorStop(0, 'rgba(201,160,74,.98)'); g.addColorStop(1, 'rgba(169,130,42,.75)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, R * .32 * pulso, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#1b1714'; ctx.font = '700 15px Source Serif 4, Georgia, serif'; ctx.fillText('VÉRTICE', cx, cy);
+      /* nodos */
+      ctx.font = '500 11px JetBrains Mono, monospace';
+      pts.forEach(function(p){
+        var tw = ctx.measureText(p.n.toUpperCase()).width + 26, th = 34;
+        ctx.fillStyle = '#ffffff'; ctx.strokeStyle = '#a9822a'; ctx.lineWidth = 1;
+        ctx.fillRect(p.x - tw / 2, p.y - th / 2, tw, th); ctx.strokeRect(p.x - tw / 2, p.y - th / 2, tw, th);
+        ctx.fillStyle = '#1b1c1a'; ctx.fillText(p.n.toUpperCase(), p.x, p.y + 1);
+      });
+    }
+    function frame(){ if (!on || document.hidden) return; draw((performance.now() - t0) / 1000); raf = requestAnimationFrame(frame); }
+    new IntersectionObserver(function(en){ on = en[0].isIntersecting; cancelAnimationFrame(raf); if (on) frame(); }, { threshold: 0.05 }).observe(cv);
+    document.addEventListener('visibilitychange', function(){ cancelAnimationFrame(raf); if (!document.hidden && on) frame(); });
+    if (reduce) { draw(2); on = false; }
+  })();
+
+  /* ═══ CONTACTO · formulario al CRM de Anticipa ═══════════════════════ */
+  (function(){
+    var forma = $('#forma'); if (!forma) return;
+    var aviso = $('#aviso'), enviar = $('#enviar');
+    var CRM = 'https://admin.anticipamx.com';
+    function avisar(m, cls){ aviso.textContent = m || ''; aviso.className = 'forma__aviso' + (cls ? ' ' + cls : ''); }
+    forma.addEventListener('submit', function(e){
+      e.preventDefault();
+      var f = forma.elements;
+      var nombre = f.nombre.value.trim(), correo = f.correo.value.trim();
+      if (!nombre) { avisar('Díganos su nombre para poder responderle.', 'mal'); f.nombre.focus(); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) { avisar('Revise el correo de contacto.', 'mal'); f.correo.focus(); return; }
+      var datos = { nombre: nombre, institucion: f.institucion.value.trim(), cargo: f.cargo.value.trim(), correo: correo, problema: f.problema.value.trim(), origen: 'anticipamx.com/gobierno', sitio_web: f.sitio_web.value };
+      enviar.disabled = true; avisar('Enviando su solicitud…');
+      fetch(CRM + '/api/publico/contacto', { method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true, body: JSON.stringify(datos) })
+        .then(function(r){ return r.json().catch(function(){ return {}; }).then(function(d){ return { ok: r.ok, d: d }; }); })
+        .then(function(x){
+          if (x.ok) { avisar('Recibimos su solicitud. Le escribimos a ' + correo + ' para agendar la conversación.', 'ok'); forma.reset(); }
+          else { avisar('No se pudo enviar (' + (x.d.error || 'sin conexión') + '). Escríbanos a hola@anticipamx.com.', 'mal'); }
+        })
+        .catch(function(){ avisar('No se pudo enviar. Escríbanos a hola@anticipamx.com.', 'mal'); })
+        .then(function(){ enviar.disabled = false; });
+    });
+  })();
+
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ ScrollTrigger.refresh(); });
+  addEventListener('load', function(){ ScrollTrigger.refresh(); });
+})();
+</script>
+</body>
+</html>
