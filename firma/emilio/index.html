@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Firma de correo · Emilio</title>
+<style>
+  body { margin: 0; background: #f2f2f3; font-family: -apple-system, Helvetica, Arial, sans-serif; color: #1d1f20; }
+  main { max-width: 720px; margin: 48px auto; padding: 0 16px; }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  p.nota { font-size: 14px; color: #555; margin: 0 0 24px; line-height: 1.5; }
+  .lienzo { background: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 32px; }
+  button { margin-top: 20px; background: #26384b; color: #fff; border: 0; border-radius: 8px; padding: 12px 18px; font-size: 14px; cursor: pointer; }
+  #ok { margin-left: 12px; font-size: 14px; color: #5980a6; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Firma de correo · Anticipa</h1>
+  <p class="nota">Pulsa «Copiar firma» y pégala en Gmail → Configuración → Ver toda la configuración → General → Firma. El logo se carga desde anticipamx.com/firma/anticipa.png.</p>
+  <div class="lienzo" id="vista"></div>
+  <button id="copiar">Copiar firma</button><span id="ok"></span>
+</main>
+
+<script>
+const LOGO = "https://anticipamx.com/firma/anticipa.png?v=2";
+
+const firma = (logo) => `<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;color:#1d1f20;">
+  <tr>
+    <td style="padding:0 18px 0 0;vertical-align:middle;">
+      <a href="https://anticipamx.com" style="text-decoration:none;"><img src="${logo}" width="180" height="32" alt="Anticipa" style="display:block;border:0;width:180px;height:32px;"></a>
+    </td>
+    <td style="padding:0 0 0 18px;border-left:2px solid #5980a6;vertical-align:middle;">
+      <div style="font-size:16px;font-weight:bold;line-height:20px;color:#1d1f20;">Emilio Valenzuela</div>
+      <div style="font-size:12px;line-height:18px;color:#5980a6;font-weight:bold;letter-spacing:0.3px;">Co-Founder · Director Sector Privado</div>
+      <div style="font-size:12px;line-height:18px;padding-top:6px;color:#1d1f20;">
+        <a href="tel:+527225559143" style="color:#1d1f20;text-decoration:none;">+52 722 555 9143</a>
+        <span style="color:#a9bed3;">&nbsp;|&nbsp;</span>
+        <a href="mailto:emilio@anticipamx.com" style="color:#1d1f20;text-decoration:none;">emilio@anticipamx.com</a>
+      </div>
+      <div style="font-size:12px;line-height:18px;">
+        <a href="https://anticipamx.com" style="color:#26384b;text-decoration:none;font-weight:bold;">anticipamx.com</a>
+        <span style="color:#a9bed3;">&nbsp;|&nbsp;</span>
+        <a href="https://anticipamx.com/tarjeta/emilio" style="color:#5980a6;text-decoration:none;">Agenda una junta</a>
+      </div>
+    </td>
+  </tr>
+</table>`;
+
+document.getElementById("vista").innerHTML = firma(LOGO);
+
+document.getElementById("copiar").onclick = async () => {
+  const html = firma(LOGO);
+  const ok = document.getElementById("ok");
+  try {
+    await navigator.clipboard.write([new ClipboardItem({
+      "text/html": new Blob([html], { type: "text/html" }),
+      "text/plain": new Blob(["Emilio Valenzuela\nCo-Founder · Director Sector Privado\n+52 722 555 9143 | emilio@anticipamx.com\nanticipamx.com"], { type: "text/plain" }),
+    })]);
+    ok.textContent = "Copiada. Pégala en la firma de Gmail.";
+  } catch {
+    const r = document.createRange();
+    r.selectNodeContents(document.getElementById("vista"));
+    getSelection().removeAllRanges(); getSelection().addRange(r);
+    ok.textContent = "Firma seleccionada: copia con ⌘C.";
+  }
+};
+</script>
+</body>
+</html>
