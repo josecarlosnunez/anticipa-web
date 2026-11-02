@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rutina</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#05070a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Rutina">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+/* Entrada a /workout. La app va cifrada (AES-GCM, llave PBKDF2 de la contraseña) en #paquete y se abre aquí mismo.
+   Generada por scripts/build-workout.mjs: no se edita a mano en workout/index.html. */
+:root{--bg:#05070a;--text:#f5f7fa;--text-2:rgba(232,238,245,.64);--text-3:rgba(232,238,245,.4);--glass:rgba(255,255,255,.075);--glass-2:rgba(255,255,255,.14);
+  --hi:rgba(255,255,255,.55);--red:#ff5a47;--blue:#4a8bff;--good:#34d27f;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Segoe UI",Roboto,sans-serif;--round:ui-rounded,"SF Pro Rounded",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  --safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px);color-scheme:dark}
+*{box-sizing:border-box;margin:0}
+html{background:var(--bg)}
+body{min-height:100vh;min-height:100dvh;color:var(--text);font:400 16px/1.4 var(--font);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;
+  display:grid;place-items:center;padding:calc(var(--safe-t) + 24px) max(16px,env(safe-area-inset-right,0px)) calc(var(--safe-b) + 24px) max(16px,env(safe-area-inset-left,0px));
+  background:radial-gradient(70% 45% at 8% 18%,rgba(255,90,71,.34),transparent 72%),radial-gradient(60% 40% at 96% 70%,rgba(74,139,255,.3),transparent 72%),var(--bg)}
+button,input{font:inherit;color:inherit}
+[hidden]{display:none!important}
+main{width:100%;max-width:400px}
+.glass{position:relative;background:linear-gradient(180deg,var(--glass-2),var(--glass));-webkit-backdrop-filter:blur(24px) saturate(180%);backdrop-filter:blur(24px) saturate(180%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.33),0 18px 40px -18px rgba(0,0,0,.6);isolation:isolate}
+.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
+  background:linear-gradient(145deg,var(--hi),rgba(255,255,255,.07) 32%,transparent 55%,rgba(255,255,255,.2));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.card{border-radius:32px;padding:26px 20px 20px;display:grid;gap:16px}
+.icon{width:72px;height:72px;border-radius:18px;display:block;box-shadow:0 12px 26px -12px rgba(255,90,71,.8)}
+h1{font-size:32px;line-height:1.05;font-weight:750;letter-spacing:-.025em}
+p{color:var(--text-2);font-size:15px}
+form{display:grid;gap:10px}
+.pass{height:56px;width:100%;border:0;border-radius:16px;background:rgba(255,255,255,.08);box-shadow:inset 0 1px 2px rgba(0,0,0,.2);padding:0 16px;font-size:18px;color:var(--text);-webkit-appearance:none;appearance:none}
+.pass::placeholder{color:var(--text-3)}
+.pass:focus{outline:none;box-shadow:inset 0 0 0 2px var(--blue)}
+.rec{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 2px;font-size:15px;font-weight:500;cursor:pointer}
+.rec input{position:absolute;opacity:0;pointer-events:none}
+.switch{width:51px;height:31px;border-radius:99px;background:rgba(255,255,255,.18);position:relative;flex:none;transition:background .2s}
+.switch::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.25);transition:transform .25s cubic-bezier(.3,.7,.4,1.3)}
+.rec input:checked+.switch{background:var(--good)}
+.rec input:checked+.switch::after{transform:translateX(20px)}
+.rec input:focus-visible+.switch{outline:2px solid var(--blue);outline-offset:2px}
+.go{min-height:54px;border:0;border-radius:99px;font-weight:650;font-size:17px;cursor:pointer;color:#fff;
+  background:linear-gradient(180deg,#ff6e5d,#ec4d3a);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 12px 26px -12px rgba(255,90,71,.8);transition:transform .18s}
+.go:active{transform:scale(.97)}
+.go:disabled{opacity:.6;cursor:progress}
+.go:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.aviso{min-height:20px;font-size:14px;color:var(--red)}
+.pie{margin-top:16px;text-align:center;font-size:12.5px;color:var(--text-3)}
+.abriendo{display:grid;justify-items:center;gap:14px;color:var(--text-2);font-size:15px}
+.spin{width:34px;height:34px;border-radius:50%;border:3px solid rgba(255,255,255,.15);border-top-color:var(--text);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){.spin{animation-duration:2.4s}.go,.switch,.switch::after{transition:none}}
+</style>
+</head>
+<body>
+<div class="abriendo" id="abriendo"><span class="spin" aria-hidden="true"></span><span>Abriendo tu rutina…</span></div>
+<main id="entrada" hidden>
+  <div class="glass card">
+    <img class="icon" src="icon-180.png" alt="">
+    <div><h1>Tu rutina</h1><p style="margin-top:6px">Escribe tu contraseña para entrar.</p></div>
+    <form id="f" autocomplete="on">
+      <input type="text" name="username" autocomplete="username" value="rutina" hidden>
+      <input class="pass" id="c" type="password" name="password" autocomplete="current-password" placeholder="Contraseña" aria-label="Contraseña" required>
+      <label class="rec">Recordar en este dispositivo<input type="checkbox" id="rec" checked><span class="switch" aria-hidden="true"></span></label>
+      <div class="aviso" id="aviso" aria-live="polite"></div>
+      <button class="go" id="b" type="submit">Entrar</button>
+    </form>
+  </div>
+  <p class="pie">Tu rutina se abre en este teléfono. La contraseña no viaja a ningún servidor.</p>
+</main>
+<script id="paquete" type="application/json">__PAQUETE__</script>
+<script>
+(function(){
+  var P = JSON.parse(document.getElementById("paquete").textContent);
+  var f = document.getElementById("f"), c = document.getElementById("c"), b = document.getElementById("b"), rec = document.getElementById("rec"), aviso = document.getElementById("aviso");
+  function bytes(s){ var bin = atob(s), a = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i); return a; }
+  // The derived key (not the password) is kept as a non-extractable CryptoKey in IndexedDB, so the next visit opens without asking.
+  function idb(mode, fn){
+    return new Promise(function(res){
+      try {
+        var rq = indexedDB.open("rutina-llave", 1);
+        rq.onupgradeneeded = function(){ rq.result.createObjectStore("k"); };
+        rq.onerror = function(){ res(null); };
+        rq.onsuccess = function(){
+          try { var tx = rq.result.transaction("k", mode), r = fn(tx.objectStore("k"));
+            tx.oncomplete = function(){ res(r && "result" in r ? r.result : true); }; tx.onerror = tx.onabort = function(){ res(null); };
+          } catch (e) { res(null); }
+        };
+      } catch (e) { res(null); }
+    });
+  }
+  async function derivar(clave){
+    var base = await crypto.subtle.importKey("raw", new TextEncoder().encode(clave), "PBKDF2", false, ["deriveKey"]);
+    return crypto.subtle.deriveKey({ name: "PBKDF2", salt: bytes(P.salt), iterations: P.iter, hash: "SHA-256" }, base, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+  }
+  async function abrir(llave){
+    var plano = await crypto.subtle.decrypt({ name: "AES-GCM", iv: bytes(P.iv) }, llave, bytes(P.datos));
+    var html = new TextDecoder().decode(plano);
+    document.open(); document.write(html); document.close();
+  }
+  function mostrar(){ document.getElementById("abriendo").hidden = true; document.getElementById("entrada").hidden = false; }
+  f.addEventListener("submit", async function(ev){
+    ev.preventDefault();
+    var clave = c.value.trim(); if (!clave) return;
+    aviso.textContent = ""; b.disabled = true; b.textContent = "Abriendo…";
+    try {
+      var llave = await derivar(clave);
+      await crypto.subtle.decrypt({ name: "AES-GCM", iv: bytes(P.iv) }, llave, bytes(P.datos));
+      if (rec.checked) await idb("readwrite", function(st){ return st.put({ salt: P.salt, llave: llave }, "v1"); });
+      await abrir(llave);
+    } catch (e) {
+      aviso.textContent = e && e.name === "OperationError" ? "Contraseña incorrecta. Vuelve a intentar." : "No se pudo abrir en este navegador. Prueba con Safari o Chrome actualizados.";
+      b.disabled = false; b.textContent = "Entrar"; c.select();
+    }
+  });
+  if (!window.crypto || !crypto.subtle) { mostrar(); aviso.textContent = "Este navegador no puede abrir la rutina. Prueba con Safari o Chrome actualizados."; return; }
+  (async function(){
+    var g = await idb("readonly", function(st){ return st.get("v1"); });
+    if (g && g.salt === P.salt && g.llave) {
+      try { await abrir(g.llave); return; } catch (e) { await idb("readwrite", function(st){ return st.delete("v1"); }); }
+    }
+    mostrar(); c.focus();
+  })();
+})();
+</script>
+</body>
+</html>

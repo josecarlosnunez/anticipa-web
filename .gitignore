@@ -1,1 +1,3 @@
 .DS_Store
+# Código sin cifrar de /workout: se publica solo cifrado (node scripts/build-workout.mjs)
+workout/_privado/
