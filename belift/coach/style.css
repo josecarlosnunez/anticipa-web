@@ -37,7 +37,7 @@ svg.i{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-widt
 .top h1 .logo{width:26px;height:26px;color:var(--volt)}
 .top h1 span{color:var(--text-2);font-weight:600}
 .top .quien{color:var(--text-2);font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:0 1 auto}
-@media (max-width:420px){.top .quien{display:none}}
+
 .top .grow{flex:1}
 .tabs{display:flex;gap:4px;padding:4px;border-radius:99px;overflow-x:auto;scrollbar-width:none;max-width:100%}
 .tabs::-webkit-scrollbar{display:none}
@@ -191,3 +191,51 @@ select.in{-webkit-appearance:none;appearance:none;background-image:linear-gradie
 .marca span{color:var(--text-2);font-weight:600}
 .avatar{background:var(--olivo)}
 ::selection{background:rgba(198,240,58,.35)}
+
+/* athletes */
+.top .quien{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:3px 10px 3px 4px;border-radius:99px;color:var(--text);font-weight:600;font-size:14px;max-width:48vw}
+.top .quien>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.top .quien svg{width:14px;height:14px;color:var(--text-2)}
+.top .quien:not(:has(.avatar)){padding-left:12px}
+.avatar.sm{width:30px;height:30px;font-size:13px}
+.avatar.lg{width:52px;height:52px;font-size:20px}
+.g3{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.atl{display:flex;align-items:center;gap:14px;text-align:left;width:100%}
+.atl .t{flex:1;min-width:0;display:grid;gap:1px}
+.atl .t b{font:650 17px var(--round)}
+.atl .t span{color:var(--text-2);font-size:13.5px}
+.atl[aria-current="true"]{box-shadow:inset 0 0 0 1.5px var(--volt),0 14px 34px -18px rgba(0,0,0,.6)}
+.atl svg{color:var(--text-3)}
+.inv{display:grid;gap:8px}
+.codigo{font:700 30px var(--round);letter-spacing:.06em;color:var(--volt)}
+.inv-form{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.inv-form .field{flex:1;min-width:200px}
+.vacia{display:grid;gap:8px;align-content:start}
+.vacia b{font:650 17px var(--round)}
+/* calendar */
+.cal{display:grid;gap:10px}
+.cal-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cal-h b{font:650 16px var(--round)}
+.cal-h .grow{flex:1}
+.cal-g{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;max-width:520px}
+.cw{text-align:center;font-size:11.5px;font-weight:650;color:var(--text-3)}
+.cd{aspect-ratio:1;display:grid;place-items:center;border-radius:50%;font:600 13.5px var(--round);color:var(--text-2);max-width:46px;width:100%;margin:0 auto}
+.cd.hecho{background:var(--c);color:var(--bosque);cursor:pointer}
+.cd.falta{box-shadow:inset 0 0 0 1.5px rgba(242,85,60,.55)}
+.cd.toca{box-shadow:inset 0 0 0 1.5px var(--sep)}
+.cd.hoy{outline:2px solid var(--text);outline-offset:1px}
+.cal-l{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--text-2)}
+.cal-l span{display:inline-flex;align-items:center;gap:6px}
+.cal-l .cd{width:12px;height:12px;display:inline-block;margin:0}
+/* sections: pills with icon on top on wide screens, a bottom bar like the app on phones */
+.tab{display:inline-flex;align-items:center;gap:7px}
+.tab svg{width:17px;height:17px}
+@media (max-width:719px){
+  .nav{position:fixed;left:0;right:0;bottom:0;z-index:9;padding:0 10px calc(var(--safe-b) + 8px);justify-content:stretch;pointer-events:none}
+  .nav .tabs{pointer-events:auto;width:100%;display:grid;grid-template-columns:repeat(6,1fr);gap:0;padding:6px;border-radius:30px;overflow:visible}
+  .tab{flex-direction:column;gap:3px;padding:7px 2px;border-radius:22px;font-size:10.5px;font-weight:600}
+  .tab svg{width:22px;height:22px}
+  body.con-nav main{padding-bottom:calc(var(--safe-b) + 110px)}
+  body.con-nav .savebar{bottom:calc(var(--safe-b) + 92px)}
+  .top h1 span{display:none}
+}

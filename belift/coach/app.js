@@ -1,4 +1,4 @@
-// Panel del coach. Lee todo con /api/sync y solo escribe la rutina y los mensajes.
+// Panel del coach. Un coach puede tener varios atletas: elige uno y ve sus datos (/api/sync?atleta=), su rutina y su chat.
 "use strict";
 const BASE = "/rutina";
 // On anticipamx.com/belift/coach the API is on the server (prueba.anticipamx.com); served from the server itself, same origin.
@@ -19,7 +19,8 @@ const INBODY = [
   ["torso", "Músculo torso", "kg"], ["piernaDer", "Músculo pierna derecha", "kg"], ["piernaIzq", "Músculo pierna izquierda", "kg"],
 ];
 
-const S = { user: null, gente: [], docs: {}, seq: 0, view: "resumen", draft: null, dirty: false, dayI: 0, abiertos: new Set(), imagenes: null, catalogo: null, invitacion: null, perfil: null };
+const S = { user: null, gente: [], docs: {}, seq: 0, view: "resumen", draft: null, dirty: false, dayI: 0, abiertos: new Set(), imagenes: null, catalogo: null, invitacion: null, perfil: null,
+  atletaId: null, atletas: [], pendientes: [], nuevaInv: null, mes: 0 };
 const $ = (s, el = document) => el.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const fmt = (n, d = 1) => n == null || !isFinite(n) ? "–" : (Math.round(n * 10 ** d) / 10 ** d).toLocaleString("es-MX");
@@ -35,6 +36,10 @@ const ICON = {
   up: '<path d="M12 19V5m-6 6l6-6 6 6"/>', down: '<path d="M12 5v14m6-6l-6 6-6-6"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>',
   plus: '<path d="M12 5v14M5 12h14"/>', refresh: '<path d="M20 11a8 8 0 10-2.3 5.7M20 4v7h-7"/>', out: '<path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/>',
   photo: '<rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="12" cy="12" r="3.2"/>', edit: '<path d="M4 20h4L19 9l-4-4L4 16v4z"/>',
+  home: '<path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/>', cal: '<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+  chart: '<path d="M4 19l5-6 4 3 7-9"/>', body: '<circle cx="12" cy="5" r="2.2"/><path d="M5 9h14M12 9v12M8.5 21l3.5-7 3.5 7"/>',
+  dumbbell: '<path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/>', chat: '<path d="M4 18l4-4h9a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v11z"/>',
+  chev: '<path d="M9 6l6 6-6 6"/>', abajo: '<path d="M6 9l6 6 6-6"/>', izq: '<path d="M15 6l-6 6 6 6"/>',
 };
 const LOGO = '<svg class="logo" viewBox="0 0 100 100" aria-label="BeLift"><path d="M21.75 89V25L35.75 11V89Z" fill="currentColor"/><circle cx="54.75" cy="65.5" r="17" fill="none" stroke="currentColor" stroke-width="13"/></svg>';
 const I = (n) => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICON[n]}</svg>`;
@@ -50,13 +55,14 @@ async function api(path, opt = {}) {
 async function sincronizar() {
   let mas = true;
   while (mas) {
-    const r = await api(`/api/sync?desde=${S.seq}`);
+    if (!S.atletaId) return;
+    const r = await api(`/api/sync?atleta=${S.atletaId}&desde=${S.seq}`);
     for (const d of r.docs) (S.docs[d.kind] ||= {})[d.id] = d;
     S.seq = r.seq; mas = r.mas;
   }
 }
 async function guardarDocs(docs) {
-  const r = await api("/api/sync", { method: "POST", body: JSON.stringify({ docs }) });
+  const r = await api(`/api/sync?atleta=${S.atletaId}`, { method: "POST", body: JSON.stringify({ docs }) });
   if (r.rechazados?.length) throw new Error("El servidor no aceptó el cambio: " + r.rechazados[0].motivo);
   await sincronizar();
 }
@@ -66,7 +72,13 @@ function aviso(t) { const el = $("#aviso"); el.textContent = t; el.hidden = fals
 const vivos = (kind) => Object.values(S.docs[kind] || {}).filter((d) => !d.deleted && d.data);
 const rutina = () => S.docs.routine?.actual?.data || { days: [] };
 const sesiones = () => vivos("session").map((d) => d.data).filter((s) => s.endedAt && s.log).sort((a, b) => b.startedAt - a.startedAt);
-const atleta = () => S.gente.find((g) => g.role === "atleta");
+const atleta = () => S.atletas.find((g) => g.id === S.atletaId) || S.gente.find((g) => g.id === S.atletaId);
+async function cargarAtletas() { const r = await api("/api/atletas"); S.atletas = r.atletas; S.pendientes = r.pendientes; }
+async function elegirAtleta(id) {
+  S.atletaId = id; S.docs = {}; S.seq = 0; S.draft = null; S.dirty = false; S.abiertos = new Set(); S.dayI = 0; S.mes = 0;
+  try { localStorage.setItem("belift-atleta", String(id)); } catch {}
+  await sincronizar();
+}
 function catalogo() {
   const m = {};
   rutina().days.forEach((d, di) => d.ex.forEach((e, ei) => {
@@ -97,12 +109,14 @@ function racha() {
 
 // ---------- views ----------
 function topbar() {
-  const tabs = [["resumen", "Resumen"], ["entrenos", "Entrenamientos"], ["progreso", "Progreso"], ["cuerpo", "Cuerpo"], ["rutina", "Rutina"], ["mensajes", "Mensajes"]];
-  const a = atleta();
-  return `<header class="top"><h1>${LOGO}<span>Coach</span></h1><span class="quien">${a ? esc(a.name) : ""}</span><span class="grow"></span>
+  const tabs = [["resumen", "Resumen", "home"], ["entrenos", "Entrenos", "cal"], ["progreso", "Progreso", "chart"], ["cuerpo", "Cuerpo", "body"], ["rutina", "Rutina", "dumbbell"], ["mensajes", "Chat", "chat"]];
+  const a = atleta(), enAtletas = S.view === "atletas" || !a;
+  return `<header class="top"><h1>${LOGO}<span>Coach</span></h1>
+      <button class="quien glass" data-a="ver" data-v="atletas" aria-label="Cambiar de atleta">${a && !enAtletas ? `${avatar(a, "sm")}<span>${esc(a.name)}</span>` : `<span>Tus atletas</span>`}${I("abajo")}</button>
+      <span class="grow"></span>
       <button class="yo" data-a="ver" data-v="perfil" aria-label="Mi perfil">${avatar(S.user)}</button>
       <button class="ic" data-a="refrescar" aria-label="Actualizar">${I("refresh")}</button><button class="ic" data-a="salir" aria-label="Cerrar sesión">${I("out")}</button></header>
-    <nav class="nav"><div class="tabs glass">${tabs.map(([k, n]) => `<button class="tab" data-a="ver" data-v="${k}" ${S.view === k ? 'aria-current="page"' : ""}>${n}</button>`).join("")}</div></nav>`;
+    ${enAtletas ? "" : `<nav class="nav"><div class="tabs glass">${tabs.map(([k, n, ic]) => `<button class="tab" data-a="ver" data-v="${k}" ${S.view === k ? 'aria-current="page"' : ""}>${I(ic)}<span>${n}</span></button>`).join("")}</div></nav>`}`;
 }
 const faltaPerfil = () => S.user?.role === "coach" && (!S.user.photo || !S.user.bio);
 const avatar = (u, cls = "") => u?.photo ? `<img class="avatar ${cls}" src="${SRV}/api/archivos/${esc(u.photo)}" alt="">`
@@ -111,8 +125,10 @@ function render() {
   const app = $("#app");
   if (!S.user) { app.innerHTML = loginV(); return; }
   if (faltaPerfil() || S.view === "perfil") { app.innerHTML = perfilV(); return; }
-  const v = { resumen: resumenV, entrenos: entrenosV, progreso: progresoV, cuerpo: cuerpoV, rutina: rutinaV, mensajes: mensajesV }[S.view] || resumenV;
+  if (!atleta()) S.view = "atletas";
+  const v = { atletas: atletasV, resumen: resumenV, entrenos: entrenosV, progreso: progresoV, cuerpo: cuerpoV, rutina: rutinaV, mensajes: mensajesV }[S.view] || resumenV;
   const y = scrollY;
+  document.body.classList.toggle("con-nav", S.view !== "atletas");
   app.innerHTML = topbar() + `<main>${v()}</main>` + (S.view === "rutina" && S.dirty ? savebar() : "");
   scrollTo(0, y);
 }
@@ -147,6 +163,50 @@ function perfilV() {
   </form></div>`;
 }
 
+// ---- your athletes: pick one, or invite someone new ----
+function atletasV() {
+  const N = S.nuevaInv;
+  return `<h2>Tus atletas</h2><p class="lead">Elige a quién ver. Cada persona tiene su rutina, sus entrenamientos y su chat.</p>
+    ${S.atletas.length ? `<div class="grid g3">${S.atletas.map((a) => `<button class="card glass atl" data-a="elegir-atleta" data-v="${a.id}" ${a.id === S.atletaId ? 'aria-current="true"' : ""}>
+      ${avatar(a, "lg")}<div class="t"><b>${esc(a.name)}</b><span>${a.ultimo ? "Último entreno: " + fdate(a.ultimo) : "Sin entrenamientos todavía"}</span>
+      <span class="num">${a.mes} ${a.mes === 1 ? "entreno" : "entrenos"} en 28 días</span></div>${I("chev")}</button>`).join("")}</div>`
+      : '<div class="empty glass">Todavía no tienes atletas. Invita al primero aquí abajo.</div>'}
+    <h3>Agregar atleta</h3>
+    <div class="card glass">${N ? `<div class="inv"><span class="muted">Invitación para <b style="color:var(--text)">${esc(N.nombre)}</b></span>
+        <p class="codigo num">${esc(N.codigo)}</p>
+        <p class="muted">Que instale BeLift en su iPhone, toque «Tengo un código de invitación» y escriba este código. Sirve una sola vez.</p>
+        <div class="exc-tools"><button class="btn pri sm" data-a="copiar-inv">Copiar mensaje</button><button class="btn sm" data-a="otra-inv">Invitar a otra persona</button></div></div>`
+      : `<form id="invitar" class="inv-form"><label class="field">Nombre de la persona<input class="in" name="name" placeholder="Ej. Ana López" maxlength="60" required></label>
+        <button class="btn pri" type="submit">${I("plus")} Crear invitación</button></form><div class="err" id="err"></div>`}</div>
+    ${S.pendientes.length ? `<h3>Invitaciones sin usar <small>${S.pendientes.length}</small></h3>
+      <div class="list glass">${S.pendientes.map((p) => `<div class="row"><div class="t"><b>${esc(p.name)}</b><span>Creada el ${fdate(p.created_at)}</span></div>
+        <button class="btn sm peligro" data-a="cancelar-inv" data-v="${p.id}">Cancelar</button></div>`).join("")}</div>` : ""}`;
+}
+// What's planned that day: the routine's weekday, unless the athlete moved their week in the app.
+function planDe(d) {
+  const mv = S.docs.prefs?.atleta?.data?.moves || {}, k = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  if (k in mv) return mv[k] ? rutina().days.find((x) => x.k === mv[k]) : null;
+  return rutina().days.find((x) => x.dow === d.getDay());
+}
+function calendario() {
+  const hoy = dia0(Date.now()), base = new Date(hoy.getFullYear(), hoy.getMonth() + S.mes, 1);
+  const n = new Date(base.getFullYear(), base.getMonth() + 1, 0).getDate(), lead = (base.getDay() + 6) % 7, porDia = {};
+  for (const s of sesiones()) (porDia[+dia0(s.startedAt)] ||= []).push(s);
+  let hechos = 0, tocaban = 0;
+  const celdas = Array.from({ length: n }, (_, i) => {
+    const d = new Date(base.getFullYear(), base.getMonth(), i + 1), ss = porDia[+d], plan = planDe(d), pasado = +d < +hoy;
+    if (ss) hechos++; if (plan && (pasado || ss)) tocaban++;
+    if (ss) { const dd = rutina().days.find((x) => x.k === ss[ss.length - 1].day);
+      return `<button class="cd hecho ${+d === +hoy ? "hoy" : ""}" style="--c:var(--${dd?.plate || plan?.plate || "volt"})" data-a="abrir-ses" data-v="${ss[ss.length - 1].id}" title="${esc(ss.map((x) => x.dayName).join(", "))}">${i + 1}</button>`; }
+    return `<span class="cd ${plan ? (pasado ? "falta" : "toca") : ""} ${+d === +hoy ? "hoy" : ""}" ${plan ? `title="Tocaba ${esc(plan.name)}"` : ""}>${i + 1}</span>`;
+  }).join("");
+  const nombre = base.toLocaleDateString("es-MX", { month: "long", year: "numeric" });
+  return `<div class="card glass cal"><div class="cal-h"><b>${nombre.charAt(0).toUpperCase() + nombre.slice(1)}</b><span class="muted num">${hechos} ${hechos === 1 ? "entreno" : "entrenos"}${tocaban ? ` · ${Math.round(Math.min(hechos, tocaban) * 100 / tocaban)}% del plan` : ""}</span>
+      <span class="grow"></span><button class="ic" data-a="mes" data-v="-1" aria-label="Mes anterior">${I("izq")}</button><button class="ic" data-a="mes" data-v="1" ${S.mes >= 0 ? "disabled" : ""} aria-label="Mes siguiente">${I("chev")}</button></div>
+    <div class="cal-g">${["L", "M", "M", "J", "V", "S", "D"].map((x) => `<span class="cw">${x}</span>`).join("")}${"<span></span>".repeat(lead)}${celdas}</div>
+    <div class="cal-l"><span><i class="cd hecho" style="--c:var(--volt)"></i>Entrenó</span><span><i class="cd falta"></i>Faltó</span><span><i class="cd toca"></i>Toca</span></div></div>`;
+}
+
 function sesionFila(s) {
   const d = rutina().days.find((x) => x.k === s.day), mins = Math.round((s.endedAt - s.startedAt) / 60000);
   const sets = Object.values(s.log).flatMap(hechas), plan = Object.values(s.plan || {}).reduce((a, p) => a + (p.sets || 0), 0);
@@ -172,6 +232,7 @@ function resumenV() {
       <div class="card glass kpi"><b class="num">${rir == null ? "–" : fmt(rir)}</b><span>RIR promedio (7 días)</span><small>Meta del plan: 1–3</small></div>
       <div class="card glass kpi"><b class="num">${ult ? fmt(ult.w) + " " + (ult.unit || "kg") : "–"}</b><span>peso corporal</span><small>${ult && prev4 ? signo(ult.w - prev4.w, 1, true) + " en 4 semanas" : ult ? sdate(+fromIso(ult.d)) : ""}</small></div>
     </div>
+    <h3>Calendario</h3>${calendario()}
     <div class="grid g2" style="margin-top:12px">
       <div><h3>Últimos entrenamientos <button class="btn sm" data-a="ver" data-v="entrenos">Ver todos</button></h3>
         <div class="list glass">${ss.slice(0, 5).map((s) => `<button class="row" data-a="abrir-ses" data-v="${s.id}">${sesionFila(s)}</button>`).join("") || '<div class="empty">Sin entrenamientos todavía.</div>'}</div></div>
@@ -206,7 +267,8 @@ function sesionDetalle(s) {
 }
 function entrenosV() {
   const ss = sesiones();
-  return `<h2>Entrenamientos</h2><p class="lead">${ss.length} sesiones. Toca una para ver cada serie con su peso, repeticiones y RIR.</p>
+  return `<h2>Entrenamientos</h2><p class="lead">${ss.length} ${ss.length === 1 ? "sesión" : "sesiones"}. Toca un día del calendario o una sesión para ver cada serie con su peso, repeticiones y RIR.</p>
+    ${calendario()}<div style="height:12px"></div>
     <div class="grid" style="gap:10px">${ss.map((s) => `<details class="ses glass" data-ses="${s.id}" ${S.abiertos.has(s.id) ? "open" : ""}><summary class="row">${sesionFila(s)}</summary><div class="ses-body">${sesionDetalle(s)}</div></details>`).join("") || '<div class="empty glass">Sin entrenamientos todavía.</div>'}</div>`;
 }
 
@@ -248,7 +310,14 @@ function rutinaV() {
   const R = borrador(), di = Math.min(S.dayI, R.days.length - 1), d = R.days[di];
   const dias = R.days.map((x, i) => `<button class="day" data-a="dia" data-v="${i}" style="--c:var(--${x.plate})" aria-current="${i === di}"><span class="dot" style="--c:var(--${x.plate})"></span>${esc(x.name)} <span class="dim">${DOWS[x.dow]?.slice(0, 3) || ""}</span></button>`).join("")
     + `<button class="day" data-a="dia-nuevo">${I("plus")} Día</button>`;
-  if (!d) return `<h2>Rutina</h2><div class="days">${dias}</div>`;
+  if (!d) {
+    const otros = S.atletas.filter((x) => x.id !== S.atletaId);
+    return `<h2>Rutina</h2><p class="lead">${esc(atleta()?.name || "Tu atleta")} todavía no tiene rutina.</p>
+      <div class="grid g2"><div class="card glass vacia"><b>Empezar desde cero</b><p class="muted">Crea el primer día y agrega ejercicios de la biblioteca.</p><button class="btn pri" data-a="dia-nuevo">${I("plus")} Crear el primer día</button></div>
+      ${otros.length ? `<div class="card glass vacia"><b>Copiar la rutina de otra persona</b><p class="muted">Luego la ajustas para esta persona.</p>
+        <div class="exc-tools"><select class="in" id="copiar-de" style="flex:1;min-width:160px">${otros.map((x) => `<option value="${x.id}">${esc(x.name)}</option>`).join("")}</select>
+        <button class="btn" data-a="copiar-rutina">Copiar</button></div></div>` : ""}</div>`;
+  }
   const P = `days.${di}`;
   const ejercicios = d.ex.map((e, ei) => {
     const p = `${P}.ex.${ei}`, abierto = S.abiertos.has(e.k);
@@ -367,8 +436,19 @@ document.addEventListener("click", async (e) => {
       case "ver": S.perfil = null; if (S.view === "rutina" && S.dirty && v !== "rutina" && !confirm("Tienes cambios sin guardar en la rutina. ¿Salir sin guardar?")) break;
         if (v !== "rutina") { S.draft = null; S.dirty = false; } S.view = v; render(); scrollTo(0, 0); break;
       case "abrir-ses": S.abiertos.add(v); S.view = "entrenos"; render(); document.querySelector(`[data-ses="${v}"]`)?.scrollIntoView({ block: "start" }); break;
-      case "refrescar": await sincronizar(); if (!S.dirty) S.draft = null; render(); aviso("Actualizado"); break;
-      case "salir": await api("/api/logout", { method: "POST" }).catch(() => {}); S.user = null; S.docs = {}; S.seq = 0; render(); break;
+      case "refrescar": await cargarAtletas(); await sincronizar(); if (!S.dirty) S.draft = null; render(); aviso("Actualizado"); break;
+      case "salir": await api("/api/logout", { method: "POST" }).catch(() => {}); S.user = null; S.docs = {}; S.seq = 0; S.atletaId = null; S.atletas = []; render(); break;
+      case "elegir-atleta": if (S.dirty && !confirm("Tienes cambios sin guardar en la rutina. ¿Salir sin guardar?")) break;
+        await elegirAtleta(+v); S.view = "resumen"; render(); scrollTo(0, 0); break;
+      case "mes": S.mes = Math.min(0, S.mes + +v); render(); break;
+      case "otra-inv": S.nuevaInv = null; render(); break;
+      case "copiar-inv": { const N = S.nuevaInv, t = `Hola ${N.nombre}, te invito a entrenar conmigo en BeLift. Instala la app, toca «Tengo un código de invitación» y escribe: ${N.codigo}`;
+        try { await navigator.clipboard.writeText(t); aviso("Mensaje copiado. Pégalo en WhatsApp."); } catch { prompt("Copia este mensaje:", t); } break; }
+      case "cancelar-inv": if (confirm("¿Cancelar esta invitación? El código deja de servir.")) { await api(`/api/invitaciones/${v}`, { method: "DELETE" }); await cargarAtletas(); render(); } break;
+      case "copiar-rutina": { const de = +$("#copiar-de").value, r = (await api(`/api/rutina?atleta=${de}`)).rutina;
+        if (!r?.days?.length) { aviso("Esa persona tampoco tiene rutina todavía."); break; }
+        cambiaEstructura((R) => { R.days = structuredClone(r.days); R.coachTips = structuredClone(r.coachTips || []); S.dayI = 0; });
+        aviso("Rutina copiada. Ajusta lo que quieras y guarda."); break; }
       case "dia": S.dayI = +v; render(); break;
       case "dia-nuevo": cambiaEstructura((R) => { R.days.push({ k: nuevoId("d"), dow: 4, dia: DOWS[4], name: "Nuevo día", focus: "", plate: "blue", ex: [] }); S.dayI = R.days.length - 1; }); break;
       case "dia-quitar": if (confirm("¿Quitar este día de la rutina? Los entrenamientos ya hechos se conservan.")) cambiaEstructura((R) => { R.days.splice(S.dayI, 1); S.dayI = 0; }); break;
@@ -431,6 +511,9 @@ document.addEventListener("submit", async (e) => {
       const r = await api(f.id === "login" ? "/api/login" : "/api/registro", { method: "POST", body: JSON.stringify({ ...datos, web: true }) });
       if (f.id === "registro") history.replaceState(null, "", location.pathname);
       S.invitacion = null; await arrancar();
+    } else if (f.id === "invitar") {
+      S.nuevaInv = await api("/api/invitar", { method: "POST", body: JSON.stringify({ name: datos.name }) });
+      await cargarAtletas(); render();
     } else if (f.id === "perfil") {
       if (!S.perfil.photo) throw new Error("Sube una foto tuya para que tu atleta te reconozca.");
       const r = await api("/api/perfil", { method: "POST", body: JSON.stringify({ name: S.perfil.name, bio: S.perfil.bio, photo: S.perfil.photo }) });
@@ -449,7 +532,11 @@ addEventListener("beforeunload", (e) => { if (S.dirty) { e.preventDefault(); e.r
 async function arrancar() {
   const yo = await api("/api/yo");
   S.user = yo.user; S.gente = yo.gente;
-  await sincronizar(); render();
+  await cargarAtletas();
+  let guardado = 0; try { guardado = +localStorage.getItem("belift-atleta"); } catch {}
+  const id = S.atletas.find((a) => a.id === guardado)?.id ?? (S.atletas.length === 1 ? S.atletas[0].id : null);
+  if (id) await elegirAtleta(id); else S.view = "atletas";
+  render();
 }
 (async () => {
   const m = /invitacion=([A-Za-z0-9-]+)/.exec(location.hash);
