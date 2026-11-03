@@ -1,8 +1,8 @@
 {
   "name": "Rutina 5 Días",
   "short_name": "Rutina",
-  "start_url": "/workout/",
-  "scope": "/workout/",
+  "start_url": "/belift/web/",
+  "scope": "/belift/web/",
   "display": "standalone",
   "background_color": "#05070a",
   "theme_color": "#05070a",

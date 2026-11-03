@@ -1,13 +1,13 @@
-// Publica /workout cifrada: nadie ve la rutina sin la contraseña.
+// Publica /belift/web cifrada: nadie ve la rutina sin la contraseña.
 //
-//   node scripts/build-workout.mjs                  cifra workout/_privado/app.html → workout/index.html
+//   node scripts/build-workout.mjs                  cifra belift/web/_privado/app.html → belift/web/index.html
 //   node scripts/build-workout.mjs --nueva-clave    pide una contraseña nueva (los teléfonos la vuelven a pedir)
-//   node scripts/build-workout.mjs --abrir          al revés: descifra workout/index.html → workout/_privado/app.html
+//   node scripts/build-workout.mjs --abrir          al revés: descifra belift/web/index.html → belift/web/_privado/app.html
 //
-// El código sin cifrar vive en workout/_privado/ (fuera de git, ver .gitignore). La primera vez pide la
-// contraseña y guarda la llave derivada en workout/_privado/llave.json, para que las siguientes versiones
+// El código sin cifrar vive en belift/web/_privado/ (fuera de git, ver .gitignore). La primera vez pide la
+// contraseña y guarda la llave derivada en belift/web/_privado/llave.json, para que las siguientes versiones
 // se publiquen sin volver a escribirla y sin cerrar la sesión de los teléfonos (misma sal, IV nuevo).
-// Si pierdes workout/_privado/, recupéralo con --abrir y tu contraseña.
+// Si pierdes belift/web/_privado/, recupéralo con --abrir y tu contraseña.
 //
 // Para pruebas: WORKOUT_CLAVE (contraseña sin preguntar), WORKOUT_LLAVE (otro archivo de llave)
 // y WORKOUT_SALIDA (otro archivo de salida).
@@ -19,10 +19,10 @@ import { createInterface } from "node:readline";
 import { webcrypto as wc } from "node:crypto";
 
 const raiz = join(dirname(fileURLToPath(import.meta.url)), "..");
-const PRIV = join(raiz, "workout/_privado");
+const PRIV = join(raiz, "belift/web/_privado");
 const FUENTE = join(PRIV, "app.html");
 const LLAVE = process.env.WORKOUT_LLAVE || join(PRIV, "llave.json");
-const SALIDA = process.env.WORKOUT_SALIDA || join(raiz, "workout/index.html");
+const SALIDA = process.env.WORKOUT_SALIDA || join(raiz, "belift/web/index.html");
 const PUERTA = join(raiz, "scripts/workout-gate.html");
 const ITER = 600000;
 
@@ -41,7 +41,7 @@ function pedirOculto(pregunta) {
 
 async function clave(confirmar) {
   if (process.env.WORKOUT_CLAVE) return process.env.WORKOUT_CLAVE.trim();
-  if (confirmar) console.log("\nElige la contraseña de anticipamx.com/workout (mínimo 8 caracteres).\nNo se ve mientras escribes: es normal. Escríbela y presiona Enter.\n");
+  if (confirmar) console.log("\nElige la contraseña de anticipamx.com/belift/web (mínimo 8 caracteres).\nNo se ve mientras escribes: es normal. Escríbela y presiona Enter.\n");
   const c = await pedirOculto("Contraseña: ");
   if (!confirmar) return c;
   if (c.length < 8) throw new Error("Usa al menos 8 caracteres.");

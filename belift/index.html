@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BeLift · Tu rutina y tu coach</title>
+<meta name="description" content="BeLift lleva tu rutina de gimnasio, tus series, descansos y récords, y te conecta con tu coach.">
+<link rel="canonical" href="https://anticipamx.com/belift/">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon-180.png">
+<meta name="theme-color" content="#0c1008">
+<meta property="og:type" content="website">
+<meta property="og:title" content="BeLift · Tu rutina y tu coach">
+<meta property="og:description" content="Series, descansos, récords y tu coach en un solo lugar.">
+<meta property="og:image" content="https://anticipamx.com/belift/assets/og.png">
+<meta property="og:url" content="https://anticipamx.com/belift/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="assets/Sora-Variable-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:"Sora";src:url("assets/Sora-Variable-latin.woff2") format("woff2");font-weight:100 800;font-display:swap}
+:root{--fondo:#0c1008;--marfil:#f5f1e6;--marfil-2:#a9ac9c;--volt:#c6f03a;--ember:#ff6a2b;--olivo:#3d4a1c;--olivo-glow:#5a6b26;--bosque:#12160e;
+  --sora:"Sora",system-ui,sans-serif;--sf:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,"Segoe UI",Roboto,sans-serif;color-scheme:dark}
+*{box-sizing:border-box;margin:0}
+html{background:var(--fondo);overflow-x:clip}
+body{color:var(--marfil);font:400 17px/1.55 var(--sf);-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:clip;
+  background:radial-gradient(70% 50% at 4% 0%,rgba(90,107,38,.7),transparent 70%),radial-gradient(60% 40% at 100% 70%,rgba(61,74,28,.45),transparent 70%),var(--fondo)}
+a{color:inherit}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:calc(env(safe-area-inset-top,0px) + 22px) 0 0}
+header img{height:34px;width:auto;display:block}
+.glass{background:linear-gradient(180deg,rgba(245,241,230,.11),rgba(245,241,230,.05));-webkit-backdrop-filter:blur(22px) saturate(160%);backdrop-filter:blur(22px) saturate(160%);
+  box-shadow:inset 0 1px 0 rgba(245,241,230,.2),0 18px 40px -22px rgba(0,0,0,.7);border:1px solid rgba(245,241,230,.08)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 24px;border-radius:99px;font:600 16px var(--sora);text-decoration:none;white-space:nowrap}
+.btn.pri{background:var(--volt);color:var(--bosque);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 14px 30px -14px rgba(198,240,58,.55)}
+.btn.sm{min-height:40px;padding:0 16px;font-size:14px}
+.btn:focus-visible{outline:2px solid var(--volt);outline-offset:3px}
+.hero{padding:clamp(56px,11vw,120px) 0 clamp(40px,7vw,72px)}
+.eyebrow{font:600 13px var(--sora);letter-spacing:.12em;text-transform:uppercase;color:var(--volt)}
+h1{font:700 clamp(40px,8.4vw,84px)/1.02 var(--sora);letter-spacing:-.035em;margin:14px 0 20px;max-width:12ch}
+h1 em{font-style:normal;color:var(--volt)}
+.lead{font-size:clamp(17px,2.2vw,20px);color:var(--marfil-2);max-width:36ch}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.card{border-radius:26px;padding:22px}
+.card .ic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:rgba(198,240,58,.12);color:var(--volt);margin-bottom:16px}
+.card .ic.ember{background:rgba(255,106,43,.14);color:var(--ember)}
+.card svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+h2{font:650 19px/1.25 var(--sora);letter-spacing:-.01em;margin-bottom:6px}
+.card p{color:var(--marfil-2);font-size:15.5px}
+.coach{margin:clamp(40px,7vw,72px) 0;border-radius:32px;padding:clamp(24px,5vw,44px);display:grid;grid-template-columns:1.3fr 1fr;gap:24px;align-items:center}
+.coach h3{font:700 clamp(26px,4vw,38px)/1.1 var(--sora);letter-spacing:-.025em;margin-bottom:12px}
+.coach ul{list-style:none;padding:0;display:grid;gap:10px;color:var(--marfil-2)}
+.coach li{display:flex;gap:10px;align-items:flex-start}
+.coach li::before{content:"";flex:none;width:8px;height:8px;margin-top:9px;border-radius:50%;background:var(--volt)}
+.coach .acc{display:grid;gap:10px;justify-items:start}
+.coach .acc small{color:var(--marfil-2);font-size:14px}
+footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;padding:28px 0 calc(env(safe-area-inset-bottom,0px) + 34px);color:var(--marfil-2);font-size:14px;border-top:1px solid rgba(245,241,230,.08)}
+footer a{color:var(--marfil-2)}
+@media (max-width:720px){.coach{grid-template-columns:1fr}}
+@media (max-width:420px){.cta .btn{width:100%}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a href="./" aria-label="BeLift"><img src="assets/logo.svg" alt="BeLift" width="103" height="34"></a>
+    <a class="btn sm glass" href="coach/">Panel del coach</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">App de gimnasio para iPhone</p>
+      <h1>Entrena con plan. <em>Sube</em> con tu coach.</h1>
+      <p class="lead">BeLift lleva tu rutina del día, cuenta tus series y descansos, te dice cuánto peso usar y le manda todo a tu coach.</p>
+      <div class="cta">
+        <a class="btn pri" href="coach/">Soy coach · Entrar</a>
+        <a class="btn glass" href="#coach">Cómo funciona</a>
+      </div>
+    </section>
+
+    <section class="grid" aria-label="Lo que hace BeLift">
+      <article class="card glass">
+        <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5v11M17.5 6.5v11M3 9.5v5M21 9.5v5M6.5 12h11"/></svg></div>
+        <h2>Tu rutina de hoy</h2>
+        <p>Abres la app y ya sabes qué toca. Si faltas un día, la semana se recorre sola.</p>
+      </article>
+      <article class="card glass">
+        <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/></svg></div>
+        <h2>Series y descansos</h2>
+        <p>Marcas la serie desde la pantalla bloqueada y suena una alarma cuando acaba el descanso.</p>
+      </article>
+      <article class="card glass">
+        <div class="ic ember"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2.5 1.5-3.5 2.5-5 .5 1.5 1.5 2.3 2.5 2.5-.5-2.5 0-5 0-7.5z"/></svg></div>
+        <h2>Récords y racha</h2>
+        <p>Ves tu progreso por ejercicio, tus récords y cuántos días llevas sin fallar.</p>
+      </article>
+      <article class="card glass">
+        <div class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18l4-4h9a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v11z"/></svg></div>
+        <h2>Tu coach contigo</h2>
+        <p>Te escribe, ajusta tu rutina y ve cada entrenamiento. Te llega aviso al momento.</p>
+      </article>
+    </section>
+
+    <section class="coach glass" id="coach">
+      <div>
+        <h3>Para coaches</h3>
+        <ul>
+          <li>Arma la rutina en minutos con una biblioteca de ejercicios con fotos, técnica y alternativas.</li>
+          <li>Ve cada entrenamiento: pesos, repeticiones y qué tan pesado se sintió.</li>
+          <li>Sigue su composición corporal con los reportes SECA y su peso.</li>
+          <li>Platica con tu atleta sin salir del panel.</li>
+        </ul>
+      </div>
+      <div class="acc">
+        <a class="btn pri" href="coach/">Entrar al panel</a>
+        <small>Para entrar necesitas una invitación.</small>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>BeLift</span>
+    <span>Hecho por <a href="https://anticipamx.com">Anticipa</a></span>
+  </footer>
+</div>
+</body>
+</html>
