@@ -93,7 +93,7 @@ const e1rm = (w, r) => (w || 0) * (1 + (r || 0) / 30);
 function historial(k) {
   return sesiones().slice().reverse().map((s) => { const sets = hechas(s.log[k]); if (!sets.length) return null;
     const top = Math.max(...sets.map((x) => +x.w || 0));
-    return { at: s.startedAt, unit: s.unit || "kg", sets, top, e1: Math.max(...sets.map((x) => e1rm(+x.w, +x.r))) };
+    return { at: s.startedAt, unit: s.units?.[k] || s.unit || "kg", sets, top, e1: Math.max(...sets.map((x) => e1rm(+x.w, +x.r))) };
   }).filter(Boolean);
 }
 function planDows() { return new Set(rutina().days.map((d) => d.dow)); }
@@ -118,7 +118,10 @@ function topbar() {
       <button class="ic" data-a="refrescar" aria-label="Actualizar">${I("refresh")}</button><button class="ic" data-a="salir" aria-label="Cerrar sesión">${I("out")}</button></header>
     ${enAtletas ? "" : `<nav class="nav"><div class="tabs glass">${tabs.map(([k, n, ic]) => `<button class="tab" data-a="ver" data-v="${k}" ${S.view === k ? 'aria-current="page"' : ""}>${I(ic)}<span>${n}</span></button>`).join("")}</div></nav>`}`;
 }
-const faltaPerfil = () => S.user?.role === "coach" && (!S.user.photo || !S.user.bio);
+// A new coach is asked for their profile once; photo and bio are optional and the whole step can be skipped.
+const GENERICO = /^coach( de prueba)?$/i;
+const omitioPerfil = () => { try { return localStorage.getItem("belift-perfil-omitido") === String(S.user?.id); } catch { return false; } };
+const faltaPerfil = () => S.user?.role === "coach" && !omitioPerfil() && (GENERICO.test(S.user.name || "") || (!S.user.photo && !S.user.bio));
 const avatar = (u, cls = "") => u?.photo ? `<img class="avatar ${cls}" src="${SRV}/api/archivos/${esc(u.photo)}" alt="">`
   : `<span class="avatar ${cls}">${esc((u?.name || "?").trim().charAt(0).toUpperCase())}</span>`;
 function render() {
@@ -149,17 +152,17 @@ function loginV() {
 
 // Your profile: the athlete sees your photo and name above the chat, and your bio when they tap it.
 function perfilV() {
-  const P = (S.perfil ||= { name: S.user.name || "", bio: S.user.bio || "", photo: S.user.photo || null }), nuevo = faltaPerfil();
+  const P = (S.perfil ||= { name: GENERICO.test(S.user.name || "") ? "" : S.user.name || "", bio: S.user.bio || "", photo: S.user.photo || null }), nuevo = faltaPerfil();
   return `<div class="login"><form class="card glass perfil" id="perfil">
-    <div><h2>${nuevo ? "Completa tu perfil" : "Tu perfil"}</h2><p class="lead" style="margin:6px 0 0">Tu atleta ve tu foto y tu nombre arriba del chat. Al tocarlos, lee tu biografía.</p></div>
+    <div><h2>${nuevo ? "Completa tu perfil" : "Tu perfil"}</h2><p class="lead" style="margin:6px 0 0">Tu atleta ve tu nombre y tu foto arriba del chat. La foto y la biografía son opcionales.</p></div>
     <label class="foto-perfil">${avatar({ name: P.name, photo: P.photo }, "xl")}<span class="btn sm">${P.photo ? "Cambiar foto" : "Subir foto"}</span>
       <input type="file" id="foto-perfil" accept="image/jpeg,image/png" hidden></label>
-    <label class="field">Nombre<input class="in" name="name" data-perfil="name" value="${esc(P.name)}" maxlength="60" required></label>
-    <label class="field">Biografía<textarea class="in" name="bio" data-perfil="bio" rows="6" maxlength="800" required
+    <label class="field">Tu nombre<input class="in" name="name" data-perfil="name" value="${esc(P.name)}" maxlength="60" placeholder="Como te conoce tu atleta" required></label>
+    <label class="field">Biografía (opcional)<textarea class="in" name="bio" data-perfil="bio" rows="5" maxlength="800"
       placeholder="Tu experiencia, certificaciones, en qué te especializas y cómo trabajas.">${esc(P.bio)}</textarea></label>
     <div class="err" id="err"></div>
     <button class="btn pri" type="submit">${nuevo ? "Guardar y entrar" : "Guardar"}</button>
-    ${nuevo ? "" : '<button class="btn" type="button" data-a="ver" data-v="resumen">Cancelar</button>'}
+    ${nuevo ? '<button class="btn" type="button" data-a="omitir-perfil">Omitir por ahora</button>' : '<button class="btn" type="button" data-a="ver" data-v="resumen">Cancelar</button>'}
   </form></div>`;
 }
 
@@ -322,8 +325,8 @@ function rutinaV() {
   const ejercicios = d.ex.map((e, ei) => {
     const p = `${P}.ex.${ei}`, abierto = S.abiertos.has(e.k);
     return `<div class="exc glass">
-      <div class="exc-h"><img src="${imgURL(e.img)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
-        <div class="t"><b>${ei + 1}. ${esc(e.name)}</b><span>${esc(e.variant)} · ${esc(e.muscle)} · <span class="num">${e.sets} × ${e.reps[0]}${e.reps[1] !== e.reps[0] ? "–" + e.reps[1] : ""}</span> · descanso ${e.rest[0]}–${e.rest[1]} s</span>
+      <div class="exc-h" data-a="editar" data-v="${e.k}" title="Editar nombre, series, unidades…"><img src="${imgURL(e.img)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
+        <div class="t"><b>${ei + 1}. ${esc(e.name)}</b><span>${esc(e.variant)} · ${esc(e.muscle)} · <span class="num">${e.sets} × ${e.reps[0]}${e.reps[1] !== e.reps[0] ? "–" + e.reps[1] : ""}</span> · descanso ${e.rest[0]}–${e.rest[1]} s${e.unit ? ` · en ${e.unit}` : ""}</span>
           ${e.coachNote ? `<span style="display:block;color:var(--volt)">Tu nota: ${esc(e.coachNote)}</span>` : ""}</div></div>
       <div class="exc-tools">
         <button class="btn sm" data-a="editar" data-v="${e.k}">${I("edit")} ${abierto ? "Cerrar" : "Editar"}</button>
@@ -337,7 +340,8 @@ function rutinaV() {
         <div class="f3">${campo(p + ".sets", "Series", e.sets, "number", 'min="1" max="12"')}
           <label class="field">Repeticiones<div class="mini"><input class="in" data-p="${p}.reps.0" type="number" min="1" value="${e.reps[0]}"><span>a</span><input class="in" data-p="${p}.reps.1" type="number" min="1" value="${e.reps[1]}"></div></label>
           <label class="field">Descanso (s)<div class="mini"><input class="in" data-p="${p}.rest.0" type="number" min="15" step="5" value="${e.rest[0]}"><span>a</span><input class="in" data-p="${p}.rest.1" type="number" min="15" step="5" value="${e.rest[1]}"></div></label>
-          <label class="field">Barra para la calculadora<select class="in" data-p="${p}.bar">${Object.entries(BARRAS).map(([k, n]) => `<option value="${k}" ${e.bar === k ? "selected" : ""}>${n}</option>`).join("")}</select></label></div>
+          <label class="field">Barra para la calculadora<select class="in" data-p="${p}.bar">${Object.entries(BARRAS).map(([k, n]) => `<option value="${k}" ${e.bar === k ? "selected" : ""}>${n}</option>`).join("")}</select></label>
+          <label class="field">Unidades<select class="in" data-p="${p}.unit">${[["", "Las del atleta"], ["kg", "Kilos (kg)"], ["lb", "Libras (lb)"]].map(([k, n]) => `<option value="${k}" ${(e.unit || "") === k ? "selected" : ""}>${n}</option>`).join("")}</select></label></div>
         ${area(p + ".cue", "Técnica (se muestra en la app)", e.cue)}
         ${area(p + ".coachNote", "Tu nota para el atleta", e.coachNote, "Ej. esta semana sube 2.5 kg si llegas a 12 en todas")}
         <div class="f3">${campo(p + ".yt", "Búsqueda del video en YouTube", e.yt)}<div class="field">Foto<button class="btn" data-a="foto" data-v="${p}.img">${I("photo")} Cambiar foto</button></div></div>
@@ -442,6 +446,7 @@ document.addEventListener("click", async (e) => {
         await elegirAtleta(+v); S.view = "resumen"; render(); scrollTo(0, 0); break;
       case "mes": S.mes = Math.min(0, S.mes + +v); render(); break;
       case "otra-inv": S.nuevaInv = null; render(); break;
+      case "omitir-perfil": try { localStorage.setItem("belift-perfil-omitido", String(S.user.id)); } catch {} S.perfil = null; S.view = "resumen"; render(); break;
       case "tip-x": $(".tip")?.remove(); try { localStorage.setItem("belift-tip-inicio", "1"); } catch {} break;
       case "copiar-inv": { const N = S.nuevaInv, t = `Hola ${N.nombre}, te invito a entrenar conmigo en BeLift. Instala la app, toca «Tengo un código de invitación» y escribe: ${N.codigo}`;
         try { await navigator.clipboard.writeText(t); aviso("Mensaje copiado. Pégalo en WhatsApp."); } catch { prompt("Copia este mensaje:", t); } break; }
@@ -469,7 +474,7 @@ document.addEventListener("click", async (e) => {
       case "cerrar": $("#modal").hidden = true; $("#modal").innerHTML = ""; break;
       case "descartar": S.draft = null; S.dirty = false; render(); break;
       case "guardar": { b.disabled = true; const R = borrador(); R.updatedAt = Date.now();
-        R.days.forEach((d) => { d.dia = DOWS[d.dow]; d.ex.forEach((x) => { x.sets = Math.max(1, +x.sets || 1); x.reps = x.reps.map((n) => Math.max(1, +n || 1)); x.rest = x.rest.map((n) => Math.max(15, +n || 60)); if (x.reps[1] < x.reps[0]) x.reps[1] = x.reps[0]; if (x.rest[1] < x.rest[0]) x.rest[1] = x.rest[0]; }); });
+        R.days.forEach((d) => { d.dia = DOWS[d.dow]; d.ex.forEach((x) => { if (!x.unit) delete x.unit; x.sets = Math.max(1, +x.sets || 1); x.reps = x.reps.map((n) => Math.max(1, +n || 1)); x.rest = x.rest.map((n) => Math.max(15, +n || 60)); if (x.reps[1] < x.reps[0]) x.reps[1] = x.reps[0]; if (x.rest[1] < x.rest[0]) x.rest[1] = x.rest[0]; }); });
         await guardarDocs([{ kind: "routine", id: "actual", data: R, updatedAt: R.updatedAt }]);
         S.draft = null; S.dirty = false; render(); aviso("Rutina guardada. Le llega a la app al sincronizar."); break; }
     }
@@ -516,7 +521,6 @@ document.addEventListener("submit", async (e) => {
       S.nuevaInv = await api("/api/invitar", { method: "POST", body: JSON.stringify({ name: datos.name }) });
       await cargarAtletas(); render();
     } else if (f.id === "perfil") {
-      if (!S.perfil.photo) throw new Error("Sube una foto tuya para que tu atleta te reconozca.");
       const r = await api("/api/perfil", { method: "POST", body: JSON.stringify({ name: S.perfil.name, bio: S.perfil.bio, photo: S.perfil.photo }) });
       S.user = r.user; S.gente = S.gente.map((g) => g.id === r.user.id ? r.user : g); S.perfil = null;
       if (S.view === "perfil") S.view = "resumen";

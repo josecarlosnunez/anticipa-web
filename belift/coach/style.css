@@ -247,3 +247,5 @@ input,textarea,select{font-size:16px}
 .tip{position:fixed;left:12px;right:12px;bottom:calc(var(--safe-b) + 96px);z-index:12;display:flex;align-items:center;gap:10px;padding:10px 10px 10px 16px;border-radius:18px;font-size:14px}
 .tip b{color:var(--volt)}
 @media (min-width:720px){.tip{left:auto;right:20px;bottom:20px;max-width:380px}}
+
+.exc-h[data-a]{cursor:pointer}
