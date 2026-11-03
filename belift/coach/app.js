@@ -442,6 +442,7 @@ document.addEventListener("click", async (e) => {
         await elegirAtleta(+v); S.view = "resumen"; render(); scrollTo(0, 0); break;
       case "mes": S.mes = Math.min(0, S.mes + +v); render(); break;
       case "otra-inv": S.nuevaInv = null; render(); break;
+      case "tip-x": $(".tip")?.remove(); try { localStorage.setItem("belift-tip-inicio", "1"); } catch {} break;
       case "copiar-inv": { const N = S.nuevaInv, t = `Hola ${N.nombre}, te invito a entrenar conmigo en BeLift. Instala la app, toca «Tengo un código de invitación» y escribe: ${N.codigo}`;
         try { await navigator.clipboard.writeText(t); aviso("Mensaje copiado. Pégalo en WhatsApp."); } catch { prompt("Copia este mensaje:", t); } break; }
       case "cancelar-inv": if (confirm("¿Cancelar esta invitación? El código deja de servir.")) { await api(`/api/invitaciones/${v}`, { method: "DELETE" }); await cargarAtletas(); render(); } break;
@@ -536,7 +537,17 @@ async function arrancar() {
   let guardado = 0; try { guardado = +localStorage.getItem("belift-atleta"); } catch {}
   const id = S.atletas.find((a) => a.id === guardado)?.id ?? (S.atletas.length === 1 ? S.atletas[0].id : null);
   if (id) await elegirAtleta(id); else S.view = "atletas";
-  render();
+  render(); sugerirInstalar();
+}
+// Like an app: Safari ignores user-scalable=no, so pinch zoom is stopped here (double-tap: touch-action in the CSS).
+for (const ev of ["gesturestart", "gesturechange", "gestureend"]) document.addEventListener(ev, (e) => e.preventDefault(), { passive: false });
+document.addEventListener("touchmove", (e) => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+// On an iPhone in Safari, once: how to put the panel on the home screen so it opens like an app.
+function sugerirInstalar() {
+  const ios = /iPhone|iPad/.test(navigator.userAgent), app = navigator.standalone || matchMedia("(display-mode: standalone)").matches;
+  let visto = false; try { visto = !!localStorage.getItem("belift-tip-inicio"); } catch {}
+  if (!ios || app || visto || $(".tip")) return;
+  document.body.insertAdjacentHTML("beforeend", `<div class="tip glass" role="note"><span>Úsalo como app: toca <b>Compartir</b> y luego <b>Agregar a inicio</b>.</span><button class="ic" data-a="tip-x" aria-label="Cerrar">${I("x")}</button></div>`);
 }
 (async () => {
   const m = /invitacion=([A-Za-z0-9-]+)/.exec(location.hash);

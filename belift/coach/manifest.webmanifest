@@ -1,0 +1,17 @@
+{
+  "name": "BeLift Coach",
+  "short_name": "BeLift Coach",
+  "description": "Panel del coach de BeLift: tus atletas, sus entrenamientos y sus rutinas.",
+  "lang": "es-MX",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0c1008",
+  "theme_color": "#0c1008",
+  "icons": [
+    { "src": "android-chrome-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "android-chrome-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "apple-touch-icon-180.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}
