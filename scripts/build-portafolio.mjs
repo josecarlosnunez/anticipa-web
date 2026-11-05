@@ -124,6 +124,40 @@ export const PROYECTOS = [
     nota: "Pantallas de la simulación comercial, con datos de ejemplo.",
   },
   {
+    slug: "jetlink",
+    nombre: "JetLink",
+    tipo: "Producto en sociedad",
+    sector: "Aviación privada",
+    estado: "En revisión en App Store y Google Play",
+    anio: "2026",
+    linea: "Jets privados que de todos modos vuelan vacíos.",
+    resumen:
+      "El marketplace de empty legs en Estados Unidos: los operadores publican los vuelos de reposicionamiento que de otro modo saldrían sin nadie a bordo, y el viajero reserva el avión completo a un solo precio, a menudo la mitad de un chárter.",
+    plataformas: "App nativa para iPhone y Android, web y portal de operadores",
+    stack: ["Next.js 16", "TypeScript", "PostgreSQL", "Swift", "Kotlin", "Braintree", "Apple Wallet", "Google Wallet", "DigitalOcean"],
+    acciones: [{ texto: "Ver jetlinkair.com", href: "https://jetlinkair.com", externo: true }],
+    problema:
+      "Cada día cientos de jets privados vuelan vacíos para llegar a donde los espera su siguiente cliente. Los operadores intentan venderlos por correo, listas de WhatsApp y brokers, con horas de anticipación y sin precio claro. El viajero nunca se entera de que ese avión existe.",
+    solucion:
+      "Una plataforma de dos lados. El viajero ve en un globo los vuelos que salen cerca de él, filtra por fecha y destino, reserva con Apple Pay, Google Pay o tarjeta y recibe su pase en la cartera del teléfono. El operador publica un tramo en treinta segundos, o lo conecta directo desde su sistema de vuelos, y confirma la reserva desde su panel.",
+    funciones: [
+      ["Globo de salidas", "Los vuelos que salen cerca del viajero en los próximos días, con el precio del avión completo y filtro por fecha."],
+      ["Reserva en un toque", "Apple Pay, Google Pay o tarjeta con 3D Secure. El cargo se aparta al solicitar y se cobra cuando el operador confirma."],
+      ["Pase en la cartera", "Pase de abordar en Apple Wallet y Google Wallet que se actualiza solo si cambia la hora o se cancela el vuelo."],
+      ["Alertas de ruta", "El viajero elige destinos y recibe un aviso en cuanto un operador publica un tramo hacia allá."],
+      ["Panel del operador", "Publicar tramos, confirmar solicitudes, flota desde el registro de la FAA, manifiesto, abordaje con QR y pagos."],
+      ["Integraciones", "Los tramos llegan solos desde FL3XX, Leon o el calendario del sistema de vuelos del operador, cada quince minutos."],
+    ],
+    decisiones: [
+      ["Nativa de verdad", "La app de iPhone está escrita en Swift y la de Android en Kotlin: no es una página web empaquetada. El globo, los pagos y la cartera se sienten del sistema."],
+      ["Un precio, sin sorpresas", "El precio que se ve ya incluye al operador, la plataforma y el procesamiento del pago. No se suma nada al pagar."],
+      ["Solo operadores verificados", "Ningún tramo sale a la venta hasta revisar el certificado de operación y el seguro del operador."],
+    ],
+    portada: "portada-jetlink.jpg",
+    galeria: { tipo: "mixta", escritorio: ["jet-panel.jpg", "jet-integraciones.jpg"], movil: ["jet-1.jpg", "jet-2.jpg", "jet-3.jpg", "jet-4.jpg"] },
+    nota: "Pantallas con vuelos y operador de ejemplo.",
+  },
+  {
     slug: "lab2go",
     nombre: "LAB2GO",
     tipo: "Concepto y prototipo",
@@ -415,7 +449,7 @@ function paginaIndice() {
   return documento({
     ruta: "/portafolio/",
     titulo: "Portafolio · Anticipa",
-    desc: "Proyectos de Anticipa: pagos para restaurantes, adelantos de nómina, apps de comunidad, salud y herramientas internas. Software a la medida hecho en México.",
+    desc: "Proyectos de Anticipa: pagos para restaurantes, adelantos de nómina, jets privados, apps de comunidad, salud y herramientas internas. Software a la medida hecho en México.",
     imagen: "/portafolio/img/og-portafolio.jpg",
     cuerpo,
     datos: {

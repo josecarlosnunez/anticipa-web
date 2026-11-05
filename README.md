@@ -40,8 +40,8 @@ node scripts/build-portafolio.mjs
 
 `portafolio/portafolio.css` y `portafolio/portafolio.js` no se generan: se editan a mano.
 `portafolio/constancia/app/` es una copia de `~/Tracker/index.html`, la app que se abre desde su caso.
-Las tarjetas del portafolio en la página de inicio viven en la landing (repositorio
-`anticipa-nomina-plasticos`, `docs/anticipa-servicios.html`); si cambia la lista de proyectos hay que
+Las tarjetas del portafolio en la página de inicio viven en la landing (carpeta
+`~/Documents/Claude/Projects/Anticipa`, `landing/anticipa-servicios.html`, y se pasan aquí con `npm run web`); si cambia la lista de proyectos hay que
 tocar ambos lados. Regla: en el portafolio no van nombres de clientes ni cifras de tratos.
 
 ## Cómo se publica un cambio
@@ -70,7 +70,7 @@ Opcional, para IPv6, cuatro registros **AAAA** en la raíz: `2606:50c0:8000::153
 
 ## De dónde sale el diseño
 
-El original vive en el repositorio `anticipa-nomina-plasticos`, en `docs/anticipa-servicios.html`,
+El original vive en la carpeta `~/Documents/Claude/Projects/Anticipa`, en `landing/anticipa-servicios.html`,
 como página autocontenida para publicar también como artifact. Este repositorio es la versión
 para el dominio: mismo contenido más `<head>` completo, metadatos para compartir y favicon.
 Si editas uno, copia el cambio al otro.
