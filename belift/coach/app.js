@@ -309,64 +309,170 @@ function cuerpoV() {
 function borrador() { if (!S.draft) S.draft = structuredClone(rutina()); return S.draft; }
 const campo = (p, label, v, tipo = "text", extra = "") => `<label class="field">${label}<input class="in" data-p="${p}" type="${tipo}" value="${esc(v ?? "")}" ${extra}></label>`;
 const area = (p, label, v, ph = "") => `<label class="field">${label}<textarea class="in" data-p="${p}" placeholder="${esc(ph)}">${esc(v ?? "")}</textarea></label>`;
+const WEEK = [1, 2, 3, 4, 5, 6, 0];
+const DISCOS = ["red", "blue", "yellow", "green", "white"];
+const DESCANSOS = [[30, 45], [45, 60], [60, 75], [60, 90], [90, 120], [120, 180], [180, 240]];
+const ESPACIO = 4;
+// Starting points for a new routine: catalog keys, so they arrive with technique, video, photo and alternatives.
+const PLANTILLAS = {
+  full: { nombre: "Cuerpo completo", desc: "Todo el cuerpo en cada sesión.", dias: [
+    { name: "Cuerpo completo", focus: "Todo el cuerpo", ex: ["leg-press", "barbell-bench-press-medium-grip", "wide-grip-lat-pulldown", "romanian-deadlift", "dumbbell-shoulder-press", "crunch-polea"] },
+    { name: "Cuerpo completo", focus: "Todo el cuerpo", ex: ["hack-squat", "incline-dumbbell-press", "seated-cable-rows", "lying-leg-curls", "side-lateral-raise", "elevacion-piernas"] }] },
+  tp: { nombre: "Torso / Pierna", desc: "Un día de torso y uno de pierna, alternados.", dias: [
+    { name: "Torso", focus: "Pecho, espalda, hombro y brazos", ex: ["barbell-bench-press-medium-grip", "wide-grip-lat-pulldown", "incline-dumbbell-press", "seated-cable-rows", "side-lateral-raise", "barbell-curl", "triceps-pushdown-rope-attachment"] },
+    { name: "Pierna", focus: "Cuádriceps, femoral, glúteo y pantorrilla", ex: ["leg-press", "romanian-deadlift", "leg-extensions", "lying-leg-curls", "barbell-hip-thrust", "standing-calf-raises"] }] },
+  ppl: { nombre: "Push / Pull / Pierna", desc: "Empuje, jalón y pierna en días separados.", dias: [
+    { name: "Push", focus: "Pecho, hombro y tríceps", ex: ["barbell-bench-press-medium-grip", "incline-dumbbell-press", "dumbbell-shoulder-press", "side-lateral-raise", "triceps-pushdown-rope-attachment", "cable-rope-overhead-triceps-extension"] },
+    { name: "Pull", focus: "Espalda y bíceps", ex: ["wide-grip-lat-pulldown", "seated-cable-rows", "one-arm-dumbbell-row", "face-pull", "barbell-curl", "hammer-curls"] },
+    { name: "Pierna", focus: "Cuádriceps, femoral, glúteo y pantorrilla", ex: ["leg-press", "hack-squat", "romanian-deadlift", "lying-leg-curls", "barbell-hip-thrust", "standing-calf-raises"] }] },
+};
+const splitPara = (n) => n <= 3 ? "full" : n === 4 ? "tp" : "ppl";
+
+// The week at a glance: each weekday with its routine day, or a free day to add one.
+function semanaV(R, di) {
+  const enSemana = new Set();
+  const celdas = WEEK.map((w) => {
+    const i = R.days.findIndex((x) => x.dow === w), x = R.days[i];
+    if (!x) return `<button class="sd libre" data-a="dia-nuevo" data-v="${w}"><small>${DOWS[w]}</small><b>Descanso</b><span>${I("plus")} Agregar día</span></button>`;
+    enSemana.add(i);
+    return `<button class="sd" data-a="dia" data-v="${i}" style="--c:var(--${x.plate})" aria-current="${i === di}"><small>${DOWS[w]}</small><b>${esc(x.name)}</b><span class="num">${x.ex.length} ${x.ex.length === 1 ? "ejercicio" : "ejercicios"}</span></button>`;
+  }).join("");
+  const otros = R.days.map((x, i) => enSemana.has(i) ? "" : `<button class="day" data-a="dia" data-v="${i}" style="--c:var(--${x.plate})" aria-current="${i === di}"><span class="dot"></span>${esc(x.name)}
+    <span class="dim">${WEEK.includes(x.dow) ? "también el " + DOWS[x.dow].toLowerCase() : "sin día fijo"}</span></button>`).join("");
+  return `<div class="semana">${celdas}</div>${otros ? `<div class="days" style="margin-top:8px">${otros}</div>` : ""}`;
+}
+
 function rutinaV() {
-  const R = borrador(), di = Math.min(S.dayI, R.days.length - 1), d = R.days[di];
-  const dias = R.days.map((x, i) => `<button class="day" data-a="dia" data-v="${i}" style="--c:var(--${x.plate})" aria-current="${i === di}"><span class="dot" style="--c:var(--${x.plate})"></span>${esc(x.name)} <span class="dim">${DOWS[x.dow]?.slice(0, 3) || ""}</span></button>`).join("")
-    + `<button class="day" data-a="dia-nuevo">${I("plus")} Día</button>`;
+  const R = borrador(), di = Math.min(S.dayI, R.days.length - 1), d = R.days[di], quien = esc(atleta()?.name || "tu atleta");
+  const titulo = `<div class="titulo"><h2>Rutina</h2>${R.days.length ? `<button class="btn sm" data-a="nueva-rutina">${I("plus")} Nueva rutina</button>` : ""}</div>`;
   if (!d) {
-    const otros = S.atletas.filter((x) => x.id !== S.atletaId);
-    return `<h2>Rutina</h2><p class="lead">${esc(atleta()?.name || "Tu atleta")} todavía no tiene rutina.</p>
-      <div class="grid g2"><div class="card glass vacia"><b>Empezar desde cero</b><p class="muted">Crea el primer día y agrega ejercicios de la biblioteca.</p><button class="btn pri" data-a="dia-nuevo">${I("plus")} Crear el primer día</button></div>
-      ${otros.length ? `<div class="card glass vacia"><b>Copiar la rutina de otra persona</b><p class="muted">Luego la ajustas para esta persona.</p>
-        <div class="exc-tools"><select class="in" id="copiar-de" style="flex:1;min-width:160px">${otros.map((x) => `<option value="${x.id}">${esc(x.name)}</option>`).join("")}</select>
-        <button class="btn" data-a="copiar-rutina">Copiar</button></div></div>` : ""}</div>`;
+    return `${titulo}<p class="lead">${quien} todavía no tiene rutina. ¿Cómo quieres empezar?</p>${opcionesNueva()}`;
   }
   const P = `days.${di}`;
-  const ejercicios = d.ex.map((e, ei) => {
-    const p = `${P}.ex.${ei}`, abierto = S.abiertos.has(e.k);
-    return `<div class="exc glass">
-      <div class="exc-h" data-a="editar" data-v="${e.k}" title="Editar nombre, series, unidades…"><img src="${imgURL(e.img)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
-        <div class="t"><b>${ei + 1}. ${esc(e.name)}</b><span>${esc(e.variant)} · ${esc(e.muscle)} · <span class="num">${e.sets} × ${e.reps[0]}${e.reps[1] !== e.reps[0] ? "–" + e.reps[1] : ""}</span> · descanso ${e.rest[0]}–${e.rest[1]} s${e.unit ? ` · en ${e.unit}` : ""}</span>
-          ${e.coachNote ? `<span style="display:block;color:var(--volt)">Tu nota: ${esc(e.coachNote)}</span>` : ""}</div></div>
-      <div class="exc-tools">
-        <button class="btn sm" data-a="editar" data-v="${e.k}">${I("edit")} ${abierto ? "Cerrar" : "Editar"}</button>
-        <button class="ic" data-a="subir" data-v="${ei}" ${ei === 0 ? "disabled" : ""} aria-label="Subir">${I("up")}</button>
-        <button class="ic" data-a="bajar" data-v="${ei}" ${ei === d.ex.length - 1 ? "disabled" : ""} aria-label="Bajar">${I("down")}</button>
-        <select class="in" data-a="mover" data-v="${ei}" style="width:auto;min-height:36px;font-size:13.5px"><option value="">Mover a…</option>${R.days.map((x, i) => i === di ? "" : `<option value="${i}">${esc(x.name)}</option>`).join("")}</select>
-        <button class="btn sm peligro" data-a="quitar" data-v="${ei}">Quitar</button>
-      </div>
-      ${abierto ? `<div class="grid" style="gap:10px">
-        <div class="f3">${campo(p + ".name", "Nombre", e.name)}${campo(p + ".variant", "Variante", e.variant)}${campo(p + ".muscle", "Músculo", e.muscle)}</div>
-        <div class="f3">${campo(p + ".sets", "Series", e.sets, "number", 'min="1" max="12"')}
-          <label class="field">Repeticiones<div class="mini"><input class="in" data-p="${p}.reps.0" type="number" min="1" value="${e.reps[0]}"><span>a</span><input class="in" data-p="${p}.reps.1" type="number" min="1" value="${e.reps[1]}"></div></label>
-          <label class="field">Descanso (s)<div class="mini"><input class="in" data-p="${p}.rest.0" type="number" min="15" step="5" value="${e.rest[0]}"><span>a</span><input class="in" data-p="${p}.rest.1" type="number" min="15" step="5" value="${e.rest[1]}"></div></label>
-          <label class="field">Barra para la calculadora<select class="in" data-p="${p}.bar">${Object.entries(BARRAS).map(([k, n]) => `<option value="${k}" ${e.bar === k ? "selected" : ""}>${n}</option>`).join("")}</select></label>
-          <label class="field">Unidades<select class="in" data-p="${p}.unit">${[["", "Las del atleta"], ["kg", "Kilos (kg)"], ["lb", "Libras (lb)"]].map(([k, n]) => `<option value="${k}" ${(e.unit || "") === k ? "selected" : ""}>${n}</option>`).join("")}</select></label></div>
-        ${area(p + ".cue", "Técnica (se muestra en la app)", e.cue)}
-        ${area(p + ".coachNote", "Tu nota para el atleta", e.coachNote, "Ej. esta semana sube 2.5 kg si llegas a 12 en todas")}
-        <div class="f3">${campo(p + ".yt", "Búsqueda del video en YouTube", e.yt)}<div class="field">Foto<button class="btn" data-a="foto" data-v="${p}.img">${I("photo")} Cambiar foto</button></div></div>
-        <div class="field">Alternativas (si la máquina está ocupada)
-          <div class="alts">${(e.alts || []).map((a, ai) => `<div class="alt"><img src="${imgURL(a.img)}" alt="" onerror="this.style.visibility='hidden'"><div class="t"><input class="in" data-p="${p}.alts.${ai}.name" value="${esc(a.name)}" aria-label="Nombre de la alternativa"><span>${esc(a.variant || "")}</span></div>
-            <button class="ic" data-a="foto" data-v="${p}.alts.${ai}.img" aria-label="Foto de la alternativa">${I("photo")}</button><button class="ic" data-a="alt-quitar" data-v="${ei}.${ai}" aria-label="Quitar alternativa">${I("x")}</button></div>`).join("")}
-            <button class="btn sm" data-a="alt-nueva" data-v="${ei}" style="justify-self:start">${I("plus")} Agregar alternativa</button></div></div>
-      </div>` : ""}
-    </div>`;
-  }).join("");
-  return `<h2>Rutina</h2><p class="lead">Lo que cambies aquí le llega a la app de tu atleta al guardar.</p>
-    <div class="days">${dias}</div>
-    <div class="card glass" style="margin-top:12px"><div class="f3">${campo(P + ".name", "Nombre del día", d.name)}${campo(P + ".focus", "Enfoque", d.focus)}
-      <label class="field">Día de la semana<select class="in" data-p="${P}.dow" data-num="1">${DOWS.map((n, i) => `<option value="${i}" ${d.dow === i ? "selected" : ""}>${n}</option>`).join("")}</select></label>
-      <label class="field">Color del disco<select class="in" data-p="${P}.plate">${Object.entries(COLORES).map(([k, n]) => `<option value="${k}" ${d.plate === k ? "selected" : ""}>${n} (${PLATES[k]})</option>`).join("")}</select></label></div>
-      <div style="margin-top:10px"><button class="btn sm peligro" data-a="dia-quitar">Quitar este día</button></div></div>
-    <h3>Ejercicios <small>${d.ex.length}</small></h3>
-    <div class="grid" style="gap:10px">${ejercicios}<button class="btn pri" data-a="catalogo" style="justify-self:start">${I("plus")} Agregar ejercicio</button></div>
+  const ejercicios = d.ex.map((e, ei) => ejercicioV(R, d, di, e, ei)).join("");
+  const libre = WEEK.find((w) => !R.days.some((x) => x.dow === w));
+  return `${titulo}<p class="lead">Toca un día para editarlo. Lo que cambies le llega a la app de ${quien} cuando guardes.</p>
+    ${semanaV(R, di)}
+    <div class="card glass dia-card" style="--c:var(--${d.plate})">
+      <div class="f3">${campo(P + ".name", "Nombre del día", d.name, "text", 'placeholder="Ej. Push, Pierna, Torso…"')}${campo(P + ".focus", "Qué trabaja", d.focus, "text", 'placeholder="Ej. Pecho, hombro y tríceps"')}
+        <label class="field">Día de la semana<select class="in" data-p="${P}.dow" data-num="1">${WEEK.map((i) => `<option value="${i}" ${d.dow === i ? "selected" : ""}>${DOWS[i]}${R.days.some((x, j) => j !== di && x.dow === i) ? " (ocupado)" : ""}</option>`).join("")}
+          <option value="-1" ${WEEK.includes(d.dow) ? "" : "selected"}>Sin día fijo</option></select></label></div>
+      <div class="dia-pie"><div class="swatches" role="group" aria-label="Color del disco">${DISCOS.map((k) => `<button class="sw" data-a="color" data-v="${k}" style="--c:var(--${k})" aria-pressed="${d.plate === k}" title="${COLORES[k]} (${PLATES[k]} kg)"></button>`).join("")}</div>
+        <span class="grow"></span>
+        <button class="btn sm" data-a="dia-duplicar" ${libre == null ? 'title="No hay días libres; la copia queda sin día fijo"' : ""}>Duplicar</button>
+        <button class="btn sm peligro" data-a="dia-quitar">Quitar día</button></div></div>
+    <h3>Ejercicios <small>${d.ex.length ? `${d.ex.reduce((t, e) => t + (+e.sets || 0), 0)} series en total` : ""}</small></h3>
+    <div class="grid" style="gap:10px">${ejercicios || `<div class="empty glass">Este día todavía no tiene ejercicios.</div>`}
+      <button class="btn pri" data-a="catalogo" style="justify-self:start">${I("plus")} Agregar ejercicios</button></div>
     <h3>Mensaje en la pantalla de inicio</h3>
     <div class="card glass">${area("message", "Lo ve arriba en la app", R.message, "Ej. Esta semana prioriza la técnica en sentadilla.")}</div>
     <h3>Indicaciones generales</h3>
-    <div class="grid" style="gap:8px">${(R.coachTips || []).map((t, i) => `<div class="card glass" style="display:grid;grid-template-columns:1fr 1.4fr auto;gap:8px;align-items:end;padding:12px">${campo(`coachTips.${i}.t`, "Indicación", t.t)}${campo(`coachTips.${i}.s`, "Detalle", t.s)}<button class="ic" data-a="tip-quitar" data-v="${i}" aria-label="Quitar">${I("x")}</button></div>`).join("")}
+    <div class="grid" style="gap:8px">${(R.coachTips || []).map((t, i) => `<div class="card glass tipc">${campo(`coachTips.${i}.t`, "Indicación", t.t)}${campo(`coachTips.${i}.s`, "Detalle", t.s)}<button class="ic" data-a="tip-quitar" data-v="${i}" aria-label="Quitar">${I("x")}</button></div>`).join("")}
       <button class="btn sm" data-a="tip-nuevo" style="justify-self:start">${I("plus")} Agregar indicación</button></div>`;
 }
-const savebar = () => `<div class="savebar glass"><span>Cambios sin guardar</span><button class="btn sm" data-a="descartar">Descartar</button><button class="btn sm pri" data-a="guardar">Guardar</button></div>`;
+
+// One exercise: the everyday controls (sets, reps, rest) in sight; the rest under "Más opciones".
+function ejercicioV(R, d, di, e, ei) {
+  const p = `days.${di}.ex.${ei}`, abierto = S.abiertos.has(e.k);
+  const r = `${e.rest[0]}-${e.rest[1]}`, rs = DESCANSOS.some(([a, b]) => `${a}-${b}` === r) ? DESCANSOS : [...DESCANSOS, e.rest];
+  return `<div class="exc glass">
+    <div class="exc-h"><img src="${imgURL(e.img)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
+      <div class="t"><b>${ei + 1}. ${esc(e.name)}</b><span>${esc([e.variant, e.muscle].filter(Boolean).join(" · "))}${e.unit ? ` · en ${e.unit}` : ""}</span>
+        ${e.coachNote ? `<span class="nota">Tu nota: ${esc(e.coachNote)}</span>` : ""}</div>
+      <div class="orden"><button class="ic" data-a="subir" data-v="${ei}" ${ei === 0 ? "disabled" : ""} aria-label="Subir">${I("up")}</button>
+        <button class="ic" data-a="bajar" data-v="${ei}" ${ei === d.ex.length - 1 ? "disabled" : ""} aria-label="Bajar">${I("down")}</button></div></div>
+    <div class="quick">
+      <div class="q"><span>Series</span><div class="step"><button class="ic" data-a="paso" data-v="${p}.sets|-1" ${e.sets <= 1 ? "disabled" : ""} aria-label="Una serie menos">−</button>
+        <b class="num">${e.sets}</b><button class="ic" data-a="paso" data-v="${p}.sets|1" ${e.sets >= 10 ? "disabled" : ""} aria-label="Una serie más">+</button></div></div>
+      <div class="q"><span>Repeticiones</span><div class="mini"><input class="in" data-p="${p}.reps.0" type="number" inputmode="numeric" min="1" value="${e.reps[0]}" aria-label="Mínimo de repeticiones"><span>a</span><input class="in" data-p="${p}.reps.1" type="number" inputmode="numeric" min="1" value="${e.reps[1]}" aria-label="Máximo de repeticiones"></div></div>
+      <div class="q"><span>Descanso</span><select class="in" data-descanso="${p}">${rs.map(([a, b]) => `<option value="${a}-${b}" ${`${a}-${b}` === r ? "selected" : ""}>${a === b ? a : a + "–" + b} s</option>`).join("")}</select></div>
+    </div>
+    <div class="exc-tools">
+      <button class="btn sm" data-a="editar" data-v="${e.k}">${I("edit")} ${abierto ? "Menos opciones" : "Más opciones"}</button>
+      ${R.days.length > 1 ? `<select class="in" data-a="mover" data-v="${ei}" style="width:auto;min-height:34px;font-size:13.5px"><option value="">Mover a…</option>${R.days.map((x, i) => i === di ? "" : `<option value="${i}">${esc(x.name)}</option>`).join("")}</select>` : ""}
+      <span class="grow"></span><button class="btn sm peligro" data-a="quitar" data-v="${ei}">Quitar</button>
+    </div>
+    ${abierto ? `<div class="grid mas" style="gap:10px">
+      ${area(p + ".coachNote", "Tu nota para el atleta", e.coachNote, "Ej. esta semana sube 2.5 kg si llegas a 12 en todas")}
+      <div class="f3">${campo(p + ".name", "Nombre", e.name)}${campo(p + ".variant", "Variante", e.variant)}${campo(p + ".muscle", "Músculo", e.muscle)}</div>
+      <div class="f3"><label class="field">Unidades<select class="in" data-p="${p}.unit">${[["", "Las del atleta"], ["kg", "Kilos (kg)"], ["lb", "Libras (lb)"]].map(([k, n]) => `<option value="${k}" ${(e.unit || "") === k ? "selected" : ""}>${n}</option>`).join("")}</select></label>
+        <label class="field">Barra (para calcular discos)<select class="in" data-p="${p}.bar">${Object.entries(BARRAS).map(([k, n]) => `<option value="${k}" ${e.bar === k ? "selected" : ""}>${n}</option>`).join("")}</select></label></div>
+      ${area(p + ".cue", "Técnica (se muestra en la app)", e.cue)}
+      <div class="f3">${campo(p + ".yt", "Búsqueda del video en YouTube", e.yt)}<div class="field">Foto<button class="btn" data-a="foto" data-v="${p}.img">${I("photo")} Cambiar foto</button></div></div>
+      <div class="field">Alternativas (si la máquina está ocupada)
+        <div class="alts">${(e.alts || []).map((a, ai) => `<div class="alt"><img src="${imgURL(a.img)}" alt="" onerror="this.style.visibility='hidden'"><div class="t"><input class="in" data-p="${p}.alts.${ai}.name" value="${esc(a.name)}" aria-label="Nombre de la alternativa"><span>${esc(a.variant || "")}</span></div>
+          <button class="ic" data-a="foto" data-v="${p}.alts.${ai}.img" aria-label="Foto de la alternativa">${I("photo")}</button><button class="ic" data-a="alt-quitar" data-v="${ei}.${ai}" aria-label="Quitar alternativa">${I("x")}</button></div>`).join("")}
+          <button class="btn sm" data-a="alt-nueva" data-v="${ei}" style="justify-self:start">${I("plus")} Agregar alternativa</button></div></div>
+    </div>` : ""}
+  </div>`;
+}
+
+// ---- new routine: from scratch, a template or another athlete's ----
+function opcionesNueva() {
+  const otros = S.atletas.filter((x) => x.id !== S.atletaId);
+  return `<div class="opciones">
+    <button class="card glass opcion" data-a="wiz-modo" data-v="cero"><b>${I("plus")} Desde cero</b><span>Eliges qué días entrena y agregas tú los ejercicios.</span></button>
+    <button class="card glass opcion" data-a="wiz-modo" data-v="plantilla"><b>${I("dumbbell")} Con una plantilla</b><span>Cuerpo completo, torso/pierna o push/pull/pierna, ya con ejercicios. Después la ajustas.</span></button>
+    ${otros.length ? `<button class="card glass opcion" data-a="wiz-modo" data-v="copiar"><b>${I("body")} Copiar la de otro atleta</b><span>Toma la rutina de alguien más y la ajustas para esta persona.</span></button>` : ""}
+  </div>`;
+}
+function abrirNueva(modo) {
+  const R = borrador(), actuales = R.days.filter((x) => !x.mine).map((x) => x.dow).filter((w) => WEEK.includes(w));   // the athlete's own days aren't the coach's plan
+  S.wiz = { modo, dias: new Set(actuales.length ? actuales : [1, 3, 5]), split: null, conservar: true };
+  if (modo === "plantilla") S.wiz.split = splitPara(S.wiz.dias.size);
+  pintaWiz();
+}
+function pintaWiz() {
+  const W = S.wiz, m = $("#modal"), R = borrador(), quien = esc(atleta()?.name || "Tu atleta"), mios = R.days.filter((x) => x.mine);
+  m.hidden = false;
+  const cerrar = `<button class="ic" data-a="cerrar" aria-label="Cerrar">${I("x")}</button>`;
+  if (!W.modo) {
+    m.innerHTML = `<div class="sheet"><h3>Nueva rutina ${cerrar}</h3><p class="muted" style="margin:0">Reemplaza la rutina actual. Hasta que guardes, ${quien} sigue con la que tiene; sus entrenamientos pasados se quedan.</p>${opcionesNueva()}</div>`;
+    return;
+  }
+  if (W.modo === "copiar") {
+    const otros = S.atletas.filter((x) => x.id !== S.atletaId);
+    m.innerHTML = `<div class="sheet"><h3>Copiar la rutina de otro atleta ${cerrar}</h3>
+      <label class="field">¿De quién?<select class="in" id="copiar-de">${otros.map((x) => `<option value="${x.id}">${esc(x.name)}</option>`).join("")}</select></label>
+      <div class="wiz-pie"><button class="btn" data-a="wiz-modo" data-v="">Atrás</button><span class="grow"></span><button class="btn pri" data-a="copiar-rutina">Copiar</button></div></div>`;
+    return;
+  }
+  const n = W.dias.size, rec = splitPara(n);
+  m.innerHTML = `<div class="sheet"><h3>${W.modo === "cero" ? "Rutina desde cero" : "Rutina con plantilla"} ${cerrar}</h3>
+    <div class="field">¿Qué días entrena?<div class="chips semana-chips">${WEEK.map((w) => `<button class="chip" data-a="wiz-dia" data-v="${w}" aria-pressed="${W.dias.has(w)}">${DOWS[w]}</button>`).join("")}</div>
+      <span class="dim" style="font-weight:500">${n ? `${n} ${n === 1 ? "día" : "días"} por semana` : "Elige al menos un día"}</span></div>
+    ${W.modo === "plantilla" ? `<div class="field">Plantilla<div class="opciones">${Object.entries(PLANTILLAS).map(([k, t]) => `<button class="card glass opcion" data-a="wiz-split" data-v="${k}" aria-pressed="${W.split === k}">
+      <b>${t.nombre}${k === rec && n ? ' <span class="pill ok">Recomendada</span>' : ""}</b><span>${t.desc} ${t.dias.map((x) => x.name).filter((x, i, a) => a.indexOf(x) === i).join(", ")}.</span></button>`).join("")}</div></div>` : ""}
+    ${mios.length ? `<label class="chk"><label><input type="checkbox" id="wiz-conservar" ${W.conservar ? "checked" : ""}> Conservar ${mios.length === 1 ? "el día que armó" : `los ${mios.length} días que armó`} ${quien} en la app (${mios.map((x) => esc(x.name)).join(", ")})</label></label>` : ""}
+    <p class="muted" style="margin:0;font-size:13px">${W.modo === "cero" ? "Se crea un día vacío por cada día que elijas; luego les pones nombre y ejercicios." : "Cada ejercicio llega con series, repeticiones, descanso, técnica, video y alternativas."} Nada cambia en la app hasta que guardes.</p>
+    <div class="wiz-pie"><button class="btn" data-a="wiz-modo" data-v="">Atrás</button><span class="grow"></span>
+      <button class="btn pri" data-a="wiz-crear" ${!n || (W.modo === "plantilla" && !W.split) ? "disabled" : ""}>Crear rutina</button></div></div>`;
+}
+const ejDe = (x) => {
+  const C = S.catalogo, alt = (k) => { const a = C.ejercicios.find((e) => e.k === k); return a && { k: "alt:" + a.k, name: a.name, variant: a.variant, muscle: a.muscle, img: a.img, cue: a.cue, yt: a.yt }; };
+  return { k: "x:" + x.k, name: x.name, variant: x.variant, muscle: x.muscle, sets: x.sets, reps: [...x.reps], rest: [...x.rest], img: x.img,
+    cue: x.cue, yt: x.yt, bar: x.bar, coachNote: "", alts: (x.alts || []).slice(0, 3).map(alt).filter(Boolean) };
+};
+function crearRutina() {
+  const W = S.wiz, R = borrador(), dows = WEEK.filter((w) => W.dias.has(w));
+  const mios = W.conservar ? R.days.filter((x) => x.mine).map((x) => W.dias.has(x.dow) ? { ...x, dow: -1 } : x) : [];
+  let dias;
+  if (W.modo === "cero") dias = dows.map((w, i) => ({ k: nuevoId("d"), dow: w, dia: DOWS[w], name: `Día ${i + 1}`, focus: "", plate: DISCOS[i % DISCOS.length], ex: [] }));
+  else {
+    const T = PLANTILLAS[W.split].dias, veces = {}, total = {};
+    dows.forEach((_, i) => { const t = T[i % T.length]; total[t.name] = (total[t.name] || 0) + 1; });
+    dias = dows.map((w, i) => {
+      const t = T[i % T.length], v = (veces[t.name] = (veces[t.name] || 0) + 1);
+      return { k: nuevoId("d"), dow: w, dia: DOWS[w], name: total[t.name] > 1 ? `${t.name} ${"ABCDEFG"[v - 1]}` : t.name, focus: t.focus,
+        plate: DISCOS[i % DISCOS.length], ex: t.ex.map((k) => S.catalogo.ejercicios.find((e) => e.k === k)).filter(Boolean).map(ejDe) };
+    });
+  }
+  R.days = [...dias, ...mios]; delete R.plan;
+  S.dayI = 0; S.dirty = true; S.wiz = null;
+  $("#modal").hidden = true; $("#modal").innerHTML = ""; render(); scrollTo(0, 0);
+  aviso(W.modo === "cero" ? "Listo. Ponle nombre a cada día y agrega ejercicios; luego guarda." : "Rutina lista. Revísala y guarda para mandarla a la app.");
+}
+const savebar = () => `<div class="savebar glass"><span>Cambios sin guardar<small>Le llegan a la app al guardar</small></span><button class="btn sm" data-a="descartar">Descartar</button><button class="btn sm pri" data-a="guardar">Guardar</button></div>`;
 function ponerEn(obj, ruta, v) { const ps = ruta.split("."), last = ps.pop(); let o = obj; for (const p of ps) o = o[p]; o[last] = v; }
 // first edit shows the save bar without re-rendering, so the field being typed in keeps focus
 function marcar() { if (!S.dirty) { S.dirty = true; $("#app").insertAdjacentHTML("beforeend", savebar()); } }
@@ -392,7 +498,8 @@ async function abrirFotos(ruta) {
 const sinAcentos = (t) => String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 async function abrirCatalogo() {
   if (!S.catalogo) S.catalogo = await fetch("catalogo.json").then((r) => r.json());
-  const m = $("#modal"), C = S.catalogo, f = { q: "", musculo: "" };
+  // starts on the muscles this day already works, so the first list is the useful one
+  const sel = borrador().days[S.dayI], m = $("#modal"), C = S.catalogo, f = { q: "", musculo: sel.ex.length && sel.ex.length < 3 && C.musculos.includes(sel.ex[0].muscle) ? sel.ex[0].muscle : "" };
   m.hidden = false;
   const pinta = () => {
     const dia = borrador().days[S.dayI], q = sinAcentos(f.q).trim(), ya = new Set(dia.ex.flatMap((e) => [e.k, e.img && "img:" + e.img]));
@@ -409,17 +516,16 @@ async function abrirCatalogo() {
     <div style="display:flex;gap:8px;flex-wrap:wrap"><input class="in" id="buscar-ej" placeholder="Buscar: press, remo, sentadilla, bíceps…" style="flex:1;min-width:200px" autofocus>
       <button class="btn" data-a="ej-nuevo">${I("plus")} En blanco</button></div>
     <div class="chips"></div><div class="pics"></div>
-    <p class="muted" style="margin:0;font-size:12.5px">Llega con series, repeticiones, descanso, técnica, video y alternativas. Después puedes editar lo que quieras.</p></div>`;
-  abrirCatalogo.pinta = pinta; abrirCatalogo.f = f; pinta();
+    <div class="wiz-pie"><p class="muted" style="margin:0;font-size:12.5px;flex:1">Toca los que quieras; cada uno llega con series, repeticiones, descanso, técnica, video y alternativas.</p>
+      <button class="btn pri" data-a="cerrar">Listo</button></div></div>`;
+  abrirCatalogo.pinta = pinta; abrirCatalogo.f = f; abrirCatalogo.n = 0; pinta();
   $("#buscar-ej", m).addEventListener("input", (e) => { f.q = e.target.value; pinta(); });
 }
 function agregarDelCatalogo(slug) {
-  const C = S.catalogo, x = C.ejercicios.find((e) => e.k === slug); if (!x) return;
-  const alt = (k) => { const a = C.ejercicios.find((e) => e.k === k); return a && { k: "alt:" + a.k, name: a.name, variant: a.variant, muscle: a.muscle, img: a.img, cue: a.cue, yt: a.yt }; };
-  const ej = { k: "x:" + x.k, name: x.name, variant: x.variant, muscle: x.muscle, sets: x.sets, reps: [...x.reps], rest: [...x.rest], img: x.img,
-    cue: x.cue, yt: x.yt, bar: x.bar, coachNote: "", alts: x.alts.slice(0, 3).map(alt).filter(Boolean) };
-  cambiaEstructura((R) => R.days[S.dayI].ex.push(ej));
-  aviso(`${x.name} agregado. Guarda para mandarlo a la app.`);
+  const x = S.catalogo.ejercicios.find((e) => e.k === slug); if (!x) return;
+  cambiaEstructura((R) => R.days[S.dayI].ex.push(ejDe(x)));
+  abrirCatalogo.n = (abrirCatalogo.n || 0) + 1;
+  aviso(`${x.name} agregado`);
 }
 
 function mensajesV() {
@@ -453,10 +559,22 @@ document.addEventListener("click", async (e) => {
       case "cancelar-inv": if (confirm("¿Cancelar esta invitación? El código deja de servir.")) { await api(`/api/invitaciones/${v}`, { method: "DELETE" }); await cargarAtletas(); render(); } break;
       case "copiar-rutina": { const de = +$("#copiar-de").value, r = (await api(`/api/rutina?atleta=${de}`)).rutina;
         if (!r?.days?.length) { aviso("Esa persona tampoco tiene rutina todavía."); break; }
-        cambiaEstructura((R) => { R.days = structuredClone(r.days); R.coachTips = structuredClone(r.coachTips || []); S.dayI = 0; });
+        $("#modal").hidden = true; $("#modal").innerHTML = ""; S.wiz = null;
+        cambiaEstructura((R) => { R.days = structuredClone(r.days).map((x) => ({ ...x, mine: undefined })); R.coachTips = structuredClone(r.coachTips || []); delete R.plan; S.dayI = 0; });
         aviso("Rutina copiada. Ajusta lo que quieras y guarda."); break; }
+      case "nueva-rutina": if (!S.catalogo) S.catalogo = await fetch("catalogo.json").then((r) => r.json()); S.wiz = { modo: null }; pintaWiz(); break;
+      case "wiz-modo": if (!S.catalogo) S.catalogo = await fetch("catalogo.json").then((r) => r.json()); if (v) abrirNueva(v); else { S.wiz = { modo: null }; pintaWiz(); } break;
+      case "wiz-dia": { const w = +v; S.wiz.dias.has(w) ? S.wiz.dias.delete(w) : S.wiz.dias.add(w); if (S.wiz.modo === "plantilla") S.wiz.split = splitPara(S.wiz.dias.size); pintaWiz(); break; }
+      case "wiz-split": S.wiz.split = v; pintaWiz(); break;
+      case "wiz-crear": crearRutina(); break;
+      case "color": cambiaEstructura((R) => { R.days[S.dayI].plate = v; }); break;
+      case "paso": { const [ruta, d] = v.split("|"); cambiaEstructura((R) => { const cur = +ruta.split(".").reduce((o, k) => o[k], R) || 0; ponerEn(R, ruta, Math.max(1, Math.min(10, cur + +d))); }); break; }
+      case "dia-duplicar": cambiaEstructura((R) => { const o = R.days[S.dayI], w = WEEK.find((x) => !R.days.some((y) => y.dow === x));
+        R.days.push({ ...structuredClone(o), k: nuevoId("d"), dow: w ?? -1, name: o.name + " (copia)", mine: undefined }); S.dayI = R.days.length - 1; });
+        aviso("Día duplicado. Cámbiale el nombre y el día."); break;
       case "dia": S.dayI = +v; render(); break;
-      case "dia-nuevo": cambiaEstructura((R) => { R.days.push({ k: nuevoId("d"), dow: 4, dia: DOWS[4], name: "Nuevo día", focus: "", plate: "blue", ex: [] }); S.dayI = R.days.length - 1; }); break;
+      case "dia-nuevo": cambiaEstructura((R) => { const w = v != null ? +v : WEEK.find((x) => !R.days.some((y) => y.dow === x)) ?? -1, usados = new Set(R.days.map((x) => x.plate));
+        R.days.push({ k: nuevoId("d"), dow: w, dia: DOWS[w], name: "Nuevo día", focus: "", plate: DISCOS.find((x) => !usados.has(x)) || "blue", ex: [] }); S.dayI = R.days.length - 1; }); break;
       case "dia-quitar": if (confirm("¿Quitar este día de la rutina? Los entrenamientos ya hechos se conservan.")) cambiaEstructura((R) => { R.days.splice(S.dayI, 1); S.dayI = 0; }); break;
       case "editar": S.abiertos.has(v) ? S.abiertos.delete(v) : S.abiertos.add(v); render(); break;
       case "subir": case "bajar": cambiaEstructura((R) => { const ex = R.days[S.dayI].ex, i = +v, j = a === "subir" ? i - 1 : i + 1; [ex[i], ex[j]] = [ex[j], ex[i]]; }); break;
@@ -471,7 +589,7 @@ document.addEventListener("click", async (e) => {
       case "cat-musculo": abrirCatalogo.f.musculo = v; abrirCatalogo.pinta(); break;
       case "cat-elegir": agregarDelCatalogo(v); abrirCatalogo.pinta(); break;
       case "foto-elegir": { const m = $("#modal"); ponerEn(borrador(), m.dataset.ruta, v); m.hidden = true; m.innerHTML = ""; S.dirty = true; render(); break; }
-      case "cerrar": $("#modal").hidden = true; $("#modal").innerHTML = ""; break;
+      case "cerrar": $("#modal").hidden = true; $("#modal").innerHTML = ""; S.wiz = null; break;
       case "descartar": S.draft = null; S.dirty = false; render(); break;
       case "guardar": { b.disabled = true; const R = borrador(); R.updatedAt = Date.now();
         R.days.forEach((d) => { d.dia = DOWS[d.dow]; d.ex.forEach((x) => { if (!x.unit) delete x.unit; x.sets = Math.max(1, +x.sets || 1); x.reps = x.reps.map((n) => Math.max(1, +n || 1)); x.rest = x.rest.map((n) => Math.max(15, +n || 60)); if (x.reps[1] < x.reps[0]) x.reps[1] = x.reps[0]; if (x.rest[1] < x.rest[0]) x.rest[1] = x.rest[0]; }); });
@@ -488,6 +606,8 @@ document.addEventListener("input", (e) => {
 });
 document.addEventListener("change", async (e) => {
   if (e.target.dataset?.p && e.target.tagName === "SELECT") { render(); return; }
+  if (e.target.dataset?.descanso) { const [a, b] = e.target.value.split("-").map(Number); ponerEn(borrador(), e.target.dataset.descanso + ".rest", [a, b]); S.dirty = true; render(); return; }
+  if (e.target.id === "wiz-conservar") { S.wiz.conservar = e.target.checked; return; }
   if (e.target.dataset?.a === "mover" && e.target.value !== "") {
     const to = +e.target.value, i = +e.target.dataset.v;
     cambiaEstructura((R) => { const [x] = R.days[S.dayI].ex.splice(i, 1); R.days[to].ex.push(x); });
