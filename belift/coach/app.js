@@ -22,6 +22,7 @@ const INBODY = [
 const S = { user: null, gente: [], docs: {}, seq: 0, view: "resumen", draft: null, dirty: false, dayI: 0, abiertos: new Set(), imagenes: null, catalogo: null, invitacion: null, perfil: null,
   atletaId: null, atletas: [], pendientes: [], nuevaInv: null, mes: 0 };
 const $ = (s, el = document) => el.querySelector(s);
+const plato = (p) => p in PLATES || p === "volt" ? p : "blue";   // a color from the document never goes raw into style=
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const fmt = (n, d = 1) => n == null || !isFinite(n) ? "–" : (Math.round(n * 10 ** d) / 10 ** d).toLocaleString("es-MX");
 const signo = (n, d = 1, invertir = false) => n == null || !isFinite(n) || Math.abs(n) < 1e-9 ? '<span class="muted">0</span>'
@@ -52,12 +53,30 @@ async function api(path, opt = {}) {
   if (!r.ok) throw Object.assign(new Error(j.error || "No se pudo conectar."), { status: r.status });
   return j;
 }
+// What the athlete's phone writes is data, not markup: units are only kg/lb and numbers are numbers before anything is drawn.
+const unidad = (u) => u === "lb" ? "lb" : "kg", numero = (v) => v == null || v === "" || !isFinite(+v) ? null : +v;
+function limpiar(d) {
+  const x = d.data; if (!x || typeof x !== "object") return d;
+  if (d.kind === "session") {
+    x.unit = unidad(x.unit);
+    if (x.units && typeof x.units === "object") for (const k in x.units) x.units[k] = unidad(x.units[k]);
+    for (const lista of [x.log, x.warm]) if (lista && typeof lista === "object") for (const k in lista)
+      lista[k] = (Array.isArray(lista[k]) ? lista[k] : []).map((e) => ({ ...e, w: numero(e?.w), r: numero(e?.r), rir: numero(e?.rir), done: !!e?.done }));
+  } else if (d.kind === "body") x.unit = unidad(x.unit);
+  else if (d.kind === "routine" && Array.isArray(x.days)) for (const dia of x.days) for (const e of dia?.ex || []) {
+    if (e.unit) e.unit = unidad(e.unit);
+    e.sets = Math.round(numero(e.sets) || 1); e.reps = (e.reps || [10, 12]).map((n) => Math.round(numero(n) || 1)); e.rest = (e.rest || [60, 90]).map((n) => Math.round(numero(n) || 60));
+  }
+  return d;
+}
 async function sincronizar() {
+  const para = S.atletaId;   // switching athlete while this runs: its answer belongs to the one before, so it's dropped
   let mas = true;
   while (mas) {
-    if (!S.atletaId) return;
-    const r = await api(`/api/sync?atleta=${S.atletaId}&desde=${S.seq}`);
-    for (const d of r.docs) (S.docs[d.kind] ||= {})[d.id] = d;
+    if (!para || S.atletaId !== para) return;
+    const r = await api(`/api/sync?atleta=${para}&desde=${S.seq}`);
+    if (S.atletaId !== para) return;
+    for (const d of r.docs) (S.docs[d.kind] ||= {})[d.id] = limpiar(d);
     S.seq = r.seq; mas = r.mas;
   }
 }
@@ -200,7 +219,7 @@ function calendario() {
     const d = new Date(base.getFullYear(), base.getMonth(), i + 1), ss = porDia[+d], plan = planDe(d), pasado = +d < +hoy;
     if (ss) hechos++; if (plan && (pasado || ss)) tocaban++;
     if (ss) { const dd = rutina().days.find((x) => x.k === ss[ss.length - 1].day);
-      return `<button class="cd hecho ${+d === +hoy ? "hoy" : ""}" style="--c:var(--${dd?.plate || plan?.plate || "volt"})" data-a="abrir-ses" data-v="${ss[ss.length - 1].id}" title="${esc(ss.map((x) => x.dayName).join(", "))}">${i + 1}</button>`; }
+      return `<button class="cd hecho ${+d === +hoy ? "hoy" : ""}" style="--c:var(--${plato(dd?.plate || plan?.plate || "volt")})" data-a="abrir-ses" data-v="${ss[ss.length - 1].id}" title="${esc(ss.map((x) => x.dayName).join(", "))}">${i + 1}</button>`; }
     return `<span class="cd ${plan ? (pasado ? "falta" : "toca") : ""} ${+d === +hoy ? "hoy" : ""}" ${plan ? `title="Tocaba ${esc(plan.name)}"` : ""}>${i + 1}</span>`;
   }).join("");
   const nombre = base.toLocaleDateString("es-MX", { month: "long", year: "numeric" });
@@ -214,7 +233,7 @@ function sesionFila(s) {
   const d = rutina().days.find((x) => x.k === s.day), mins = Math.round((s.endedAt - s.startedAt) / 60000);
   const sets = Object.values(s.log).flatMap(hechas), plan = Object.values(s.plan || {}).reduce((a, p) => a + (p.sets || 0), 0);
   const vol = sets.reduce((a, x) => a + (+x.w || 0) * (+x.r || 0), 0);
-  return `<span class="dot" style="--c:var(--${d?.plate || "blue"})"></span><div class="t"><b>${esc(s.dayName || d?.name || s.day)}</b>
+  return `<span class="dot" style="--c:var(--${plato(d?.plate)})"></span><div class="t"><b>${esc(s.dayName || d?.name || s.day)}</b>
     <span class="num">${fdate(s.startedAt)} · ${mins} min · ${sets.length}${plan ? "/" + plan : ""} series · ${Math.round(vol).toLocaleString("es-MX")} ${s.unit || "kg"}</span></div>`;
 }
 function resumenV() {
@@ -238,7 +257,7 @@ function resumenV() {
     <h3>Calendario</h3>${calendario()}
     <div class="grid g2" style="margin-top:12px">
       <div><h3>Últimos entrenamientos <button class="btn sm" data-a="ver" data-v="entrenos">Ver todos</button></h3>
-        <div class="list glass">${ss.slice(0, 5).map((s) => `<button class="row" data-a="abrir-ses" data-v="${s.id}">${sesionFila(s)}</button>`).join("") || '<div class="empty">Sin entrenamientos todavía.</div>'}</div></div>
+        <div class="list glass">${ss.slice(0, 5).map((s) => `<button class="row" data-a="abrir-ses" data-v="${esc(s.id)}">${sesionFila(s)}</button>`).join("") || '<div class="empty">Sin entrenamientos todavía.</div>'}</div></div>
       <div><h3>Récords recientes <small>últimos 14 días</small></h3>
         <div class="list glass">${prs.map((p) => `<div class="row"><span class="pill pr">PR</span><div class="t"><b>${esc(p.name)}</b><span class="num">${fmt(p.w)} ${p.unit} × ${p.r} · ${sdate(p.at)}</span></div></div>`).join("") || '<div class="empty">Sin récords nuevos.</div>'}</div></div>
       <div><h3>Composición (SECA) <button class="btn sm" data-a="ver" data-v="cuerpo">Ver todo</button></h3>
@@ -272,7 +291,7 @@ function entrenosV() {
   const ss = sesiones();
   return `<h2>Entrenamientos</h2><p class="lead">${ss.length} ${ss.length === 1 ? "sesión" : "sesiones"}. Toca un día del calendario o una sesión para ver cada serie con su peso, repeticiones y RIR.</p>
     ${calendario()}<div style="height:12px"></div>
-    <div class="grid" style="gap:10px">${ss.map((s) => `<details class="ses glass" data-ses="${s.id}" ${S.abiertos.has(s.id) ? "open" : ""}><summary class="row">${sesionFila(s)}</summary><div class="ses-body">${sesionDetalle(s)}</div></details>`).join("") || '<div class="empty glass">Sin entrenamientos todavía.</div>'}</div>`;
+    <div class="grid" style="gap:10px">${ss.map((s) => `<details class="ses glass" data-ses="${esc(s.id)}" ${S.abiertos.has(s.id) ? "open" : ""}><summary class="row">${sesionFila(s)}</summary><div class="ses-body">${sesionDetalle(s)}</div></details>`).join("") || '<div class="empty glass">Sin entrenamientos todavía.</div>'}</div>`;
 }
 
 function spark(vals, W = 120, H = 34) {
@@ -335,9 +354,9 @@ function semanaV(R, di) {
     const i = R.days.findIndex((x) => x.dow === w), x = R.days[i];
     if (!x) return `<button class="sd libre" data-a="dia-nuevo" data-v="${w}"><small>${DOWS[w]}</small><b>Descanso</b><span>${I("plus")} Agregar día</span></button>`;
     enSemana.add(i);
-    return `<button class="sd" data-a="dia" data-v="${i}" style="--c:var(--${x.plate})" aria-current="${i === di}"><small>${DOWS[w]}</small><b>${esc(x.name)}</b><span class="num">${x.ex.length} ${x.ex.length === 1 ? "ejercicio" : "ejercicios"}</span></button>`;
+    return `<button class="sd" data-a="dia" data-v="${i}" style="--c:var(--${plato(x.plate)})" aria-current="${i === di}"><small>${DOWS[w]}</small><b>${esc(x.name)}</b><span class="num">${x.ex.length} ${x.ex.length === 1 ? "ejercicio" : "ejercicios"}</span></button>`;
   }).join("");
-  const otros = R.days.map((x, i) => enSemana.has(i) ? "" : `<button class="day" data-a="dia" data-v="${i}" style="--c:var(--${x.plate})" aria-current="${i === di}"><span class="dot"></span>${esc(x.name)}
+  const otros = R.days.map((x, i) => enSemana.has(i) ? "" : `<button class="day" data-a="dia" data-v="${i}" style="--c:var(--${plato(x.plate)})" aria-current="${i === di}"><span class="dot"></span>${esc(x.name)}
     <span class="dim">${WEEK.includes(x.dow) ? "también el " + DOWS[x.dow].toLowerCase() : "sin día fijo"}</span></button>`).join("");
   return `<div class="semana">${celdas}</div>${otros ? `<div class="days" style="margin-top:8px">${otros}</div>` : ""}`;
 }
@@ -353,7 +372,7 @@ function rutinaV() {
   const libre = WEEK.find((w) => !R.days.some((x) => x.dow === w));
   return `${titulo}<p class="lead">Toca un día para editarlo. Lo que cambies le llega a la app de ${quien} cuando guardes.</p>
     ${semanaV(R, di)}
-    <div class="card glass dia-card" style="--c:var(--${d.plate})">
+    <div class="card glass dia-card" style="--c:var(--${plato(d.plate)})">
       <div class="f3">${campo(P + ".name", "Nombre del día", d.name, "text", 'placeholder="Ej. Push, Pierna, Torso…"')}${campo(P + ".focus", "Qué trabaja", d.focus, "text", 'placeholder="Ej. Pecho, hombro y tríceps"')}
         <label class="field">Día de la semana<select class="in" data-p="${P}.dow" data-num="1">${WEEK.map((i) => `<option value="${i}" ${d.dow === i ? "selected" : ""}>${DOWS[i]}${R.days.some((x, j) => j !== di && x.dow === i) ? " (ocupado)" : ""}</option>`).join("")}
           <option value="-1" ${WEEK.includes(d.dow) ? "" : "selected"}>Sin día fijo</option></select></label></div>
@@ -388,7 +407,7 @@ function ejercicioV(R, d, di, e, ei) {
       <div class="q"><span>Descanso</span><select class="in" data-descanso="${p}">${rs.map(([a, b]) => `<option value="${a}-${b}" ${`${a}-${b}` === r ? "selected" : ""}>${a === b ? a : a + "–" + b} s</option>`).join("")}</select></div>
     </div>
     <div class="exc-tools">
-      <button class="btn sm" data-a="editar" data-v="${e.k}">${I("edit")} ${abierto ? "Menos opciones" : "Más opciones"}</button>
+      <button class="btn sm" data-a="editar" data-v="${esc(e.k)}">${I("edit")} ${abierto ? "Menos opciones" : "Más opciones"}</button>
       ${R.days.length > 1 ? `<select class="in" data-a="mover" data-v="${ei}" style="width:auto;min-height:34px;font-size:13.5px"><option value="">Mover a…</option>${R.days.map((x, i) => i === di ? "" : `<option value="${i}">${esc(x.name)}</option>`).join("")}</select>` : ""}
       <span class="grow"></span><button class="btn sm peligro" data-a="quitar" data-v="${ei}">Quitar</button>
     </div>
@@ -545,7 +564,7 @@ document.addEventListener("click", async (e) => {
       case "modo": S.invitacion = S.invitacion == null ? "" : null; render(); break;
       case "ver": S.perfil = null; if (S.view === "rutina" && S.dirty && v !== "rutina" && !confirm("Tienes cambios sin guardar en la rutina. ¿Salir sin guardar?")) break;
         if (v !== "rutina") { S.draft = null; S.dirty = false; } S.view = v; render(); scrollTo(0, 0); break;
-      case "abrir-ses": S.abiertos.add(v); S.view = "entrenos"; render(); document.querySelector(`[data-ses="${v}"]`)?.scrollIntoView({ block: "start" }); break;
+      case "abrir-ses": S.abiertos.add(v); S.view = "entrenos"; render(); document.querySelector(`[data-ses="${CSS.escape(v)}"]`)?.scrollIntoView({ block: "start" }); break;
       case "refrescar": await cargarAtletas(); await sincronizar(); if (!S.dirty) S.draft = null; render(); aviso("Actualizado"); break;
       case "salir": await api("/api/logout", { method: "POST" }).catch(() => {}); S.user = null; S.docs = {}; S.seq = 0; S.atletaId = null; S.atletas = []; render(); break;
       case "elegir-atleta": if (S.dirty && !confirm("Tienes cambios sin guardar en la rutina. ¿Salir sin guardar?")) break;
@@ -591,10 +610,19 @@ document.addEventListener("click", async (e) => {
       case "foto-elegir": { const m = $("#modal"); ponerEn(borrador(), m.dataset.ruta, v); m.hidden = true; m.innerHTML = ""; S.dirty = true; render(); break; }
       case "cerrar": $("#modal").hidden = true; $("#modal").innerHTML = ""; S.wiz = null; break;
       case "descartar": S.draft = null; S.dirty = false; render(); break;
-      case "guardar": { b.disabled = true; const R = borrador(); R.updatedAt = Date.now();
-        R.days.forEach((d) => { d.dia = DOWS[d.dow]; d.ex.forEach((x) => { if (!x.unit) delete x.unit; x.sets = Math.max(1, +x.sets || 1); x.reps = x.reps.map((n) => Math.max(1, +n || 1)); x.rest = x.rest.map((n) => Math.max(15, +n || 60)); if (x.reps[1] < x.reps[0]) x.reps[1] = x.reps[0]; if (x.rest[1] < x.rest[0]) x.rest[1] = x.rest[0]; }); });
-        await guardarDocs([{ kind: "routine", id: "actual", data: R, updatedAt: R.updatedAt }]);
-        S.draft = null; S.dirty = false; render(); aviso("Rutina guardada. Le llega a la app al sincronizar."); break; }
+      case "guardar": { b.disabled = true;
+        try {
+          // the athlete may have made a day in the app while you edited: it stays (unless you removed it yourself)
+          const antes = new Set(rutina().days.map((d) => d.k));
+          await sincronizar();
+          const R = borrador(), nuevos = rutina().days.filter((d) => d.mine && !antes.has(d.k) && !R.days.some((x) => x.k === d.k));
+          if (nuevos.length) { R.days.push(...structuredClone(nuevos)); aviso(`${atleta()?.name || "Tu atleta"} agregó ${nuevos.map((d) => d.name).join(", ")} mientras editabas; se conserva.`); }
+          R.updatedAt = Date.now();
+          R.days.forEach((d) => { d.dia = DOWS[d.dow]; d.ex.forEach((x) => { if (!x.unit) delete x.unit; x.sets = Math.max(1, Math.round(+x.sets) || 1); x.reps = x.reps.map((n) => Math.max(1, Math.round(+n) || 1)); x.rest = x.rest.map((n) => Math.max(15, Math.round(+n) || 60)); if (x.reps[1] < x.reps[0]) x.reps[1] = x.reps[0]; if (x.rest[1] < x.rest[0]) x.rest[1] = x.rest[0]; }); });
+          await guardarDocs([{ kind: "routine", id: "actual", data: R, updatedAt: R.updatedAt }]);
+          S.draft = null; S.dirty = false; render(); if (!nuevos.length) aviso("Rutina guardada. Le llega a la app al sincronizar.");
+        } finally { b.disabled = false; }
+        break; }
     }
   } catch (err) { aviso(err.message); if (err.status === 401) { S.user = null; render(); } }
 });
